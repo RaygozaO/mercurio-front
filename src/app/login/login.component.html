@@ -28,10 +28,11 @@
           </div>
         </div>
 
-        <!-- CAPTCHA visual inicial -->
-        <div class="form-group form-check">
-          <input type="checkbox" class="form-check-input" id="simpleCaptchaCheck" (change)="toggleCaptcha()">
-          <label class="form-check-label" for="simpleCaptchaCheck">No soy un robot</label>
+        <div class="form-group ">
+          <div class="form-check checkbox-inline">
+            <label class="form-check-label mb-0" for="simpleCaptchaCheck">No soy un robot</label>
+          </div>
+          <input type="checkbox" style="max-width: 60px;" id="simpleCaptchaCheck" (change)="toggleCaptcha()">
         </div>
 
         <!-- CAPTCHA dinámico: pregunta aleatoria -->
