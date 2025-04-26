@@ -2,7 +2,8 @@ pipeline {
   agent any
 
     environment {
-    ANGULAR_DIR = "."
+    BRANCH_NAME = 'main' // <--- Aquí definimos manualmente
+        ANGULAR_DIR = "."
         BUILD_DIR = "dist/mercurio-front"
     }
 
