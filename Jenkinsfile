@@ -1,36 +1,31 @@
-git branch pipeline {
-    agent any
+pipeline {
+  agent any
 
     environment {
-        ANGULAR_DIR = "frontend"
-        BUILD_DIR = "dist/frontend" // cambia si tu app se llama diferente
-        DEPLOY_DIR = "/var/www/html/mercurio-front" // donde Nginx sirve el frontend
+    ANGULAR_DIR = "." // cambia si tu angular.json está en raíz o ajusta
+        BUILD_DIR = "dist/mercurio-front" // ajusta si tu carpeta de build tiene otro nombre
+        DEPLOY_DIR = "/var/www/html/mercurio-front" // donde Nginx sirve tu frontend
     }
 
     stages {
-        stage('Checkout') {
-            steps {
-                git branch: 'main', url: 'git@github.com:RaygozaO/mercurio-front.git'
-            }
-        }
-        stage('Install Dependencies') {
-            steps {
-                dir("${ANGULAR_DIR}") {
-                    sh 'npm install'
+    stage('Install Dependencies') {
+      steps {
+        dir("${ANGULAR_DIR}") {
+          sh 'npm install'
                 }
             }
         }
         stage('Build Angular') {
-            steps {
-                dir("${ANGULAR_DIR}") {
-                    sh 'npm run build --configuration production'
+      steps {
+        dir("${ANGULAR_DIR}") {
+          sh 'npm run build --configuration production'
                 }
             }
         }
         stage('Deploy') {
-            steps {
-                sh "rm -rf ${DEPLOY_DIR}/*"
-                sh "cp -r ${ANGULAR_DIR}/${BUILD_DIR}/* ${DEPLOY_DIR}/"
+      steps {
+        sh "rm -rf ${DEPLOY_DIR}/*"
+                sh "cp -r ${BUILD_DIR}/* ${DEPLOY_DIR}/"
             }
         }
     }
