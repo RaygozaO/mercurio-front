@@ -1,10 +1,20 @@
 # See https://docs.github.com/get-started/getting-started-with-git/ignoring-files for more about ignoring files.
 
 # Compiled output
-/dist
-/tmp
-/out-tsc
+
 /bazel-out
+/dist/
+/out-tsc/
+/angular/
+/node_modules/
+/coverage/
+/browser/
+/server/
+
+# Environment
+.env
+.env.*
+
 
 # Node
 /node_modules
@@ -14,6 +24,12 @@ yarn-error.log
 # IDEs and editors
 .idea/
 .project
+.vscode
+.DS_Store
+Thumbs.db
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
 .classpath
 .c9/
 *.launch
