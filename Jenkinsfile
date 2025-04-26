@@ -4,7 +4,7 @@ pipeline {
     environment {
     ANGULAR_DIR = "." // cambia si tu angular.json está en raíz o ajusta
         BUILD_DIR = "dist/mercurio-front" // ajusta si tu carpeta de build tiene otro nombre
-        DEPLOY_DIR = "/var/www/html/mercurio-front" // donde Nginx sirve tu frontend
+        DEPLOY_DIR = "/var/www/mercurio-front" // donde Nginx sirve tu frontend
     }
 
     stages {
