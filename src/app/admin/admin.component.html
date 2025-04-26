@@ -1,0 +1,71 @@
+
+<!-- dashboard.component.html -->
+<!-- Barra de navegación -->
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+  <div class="container-fluid margin-nav">
+    <a class="navbar-brand letra-azul" href="#">Farmacia Mercurio</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+        <li class="nav-item">
+          <a class="letrazul nav-link active" aria-current="page" href="#">Inicio</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link letrazul" href="#">Datos Personales</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link active letrazul" href="#" tabindex="-1" aria-disabled="true">Citas Médicas</a>
+        </li>
+      </ul>
+      <form class="d-flex">
+        <input class="form-control me-2" type="search" placeholder="Ingresa busqueda ..." aria-label="Search">
+        <button class="btn-btn" type="submit">Buscar</button>
+      </form>
+    </div>
+  </div>
+</nav>
+<div class="dashboard-container">
+  <!-- Contenedor del dashboard con menú lateral y contenido dinámico -->
+  <div class="dashboard-content">
+    <!-- Menú lateral -->
+    <aside class="sidebar fondo-loto">
+      <ul>
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle btn-dropdown" href="#" id="DropdownVentas" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            Ventas
+          </a>
+          <ul class="dropdown-menu" aria-labelledby="DropdownVentas">
+            <li><a class="dropdown-item" [routerLink]="['/admin/ventas']">Ventas</a></li>
+          </ul>
+        </li>
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle btn-dropdown" href="#" id="DropdownCompras" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            Compras
+          </a>
+          <ul class="dropdown-menu" aria-labelledby="DropdownCompras">
+            <li><a class="dropdown-item" [routerLink]="['/admin/inventario']">Compras</a></li>
+          </ul>
+        </li>
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle btn-dropdown" href="#" id="DropdownCliente" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            Clientes
+          </a>
+          <ul class="dropdown-menu" aria-labelledby="DropdownCliente">
+            <li><a class="dropdown-item" [routerLink]="['/admin/crear-cliente']">Crear Cliente</a></li>
+          </ul>
+        </li>
+      </ul>
+    </aside>
+    <!-- Contenido dinámico -->
+    <section class="content">
+      <br>
+      <router-outlet></router-outlet> <!-- Aquí se renderizan las vistas dinámicas -->
+      <br>
+    </section>
+  </div>
+</div>
+
+
+

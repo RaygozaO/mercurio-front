@@ -1,0 +1,77 @@
+<div class="container">
+  <h1 class="fuente-azul">FARMACIA MERCURIO</h1>
+</div>
+<div class="container">
+  <div class="login-container">
+    <div class="login-content">
+      <p class="text-center">
+        <i class="fas fa-user-circle fa-5x"></i>
+      </p>
+      <p class="text-center">Inicia sesión con tu cuenta</p>
+      <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" autocomplete="off">
+
+        <!-- Email -->
+        <div class="form-group">
+          <label for="email">E-mail</label>
+          <input type="email" class="form-control" id="email" formControlName="email" required>
+          <div *ngIf="loginForm.get('email')?.invalid && loginForm.get('email')?.touched" class="text-danger">
+            El email es requerido.
+          </div>
+        </div>
+
+        <!-- Password -->
+        <div class="form-group">
+          <label for="password">Contraseña</label>
+          <input type="password" class="form-control" id="password" formControlName="clave_log" required>
+          <div *ngIf="loginForm.get('clave_log')?.invalid && loginForm.get('clave_log')?.touched" class="text-danger">
+            La contraseña es requerida.
+          </div>
+        </div>
+
+        <!-- CAPTCHA visual inicial -->
+        <div class="form-group form-check">
+          <input type="checkbox" class="form-check-input" id="simpleCaptchaCheck" (change)="toggleCaptcha()">
+          <label class="form-check-label" for="simpleCaptchaCheck">No soy un robot</label>
+        </div>
+
+        <!-- CAPTCHA dinámico: pregunta aleatoria -->
+        <div class="form-group" *ngIf="showCaptchaChallenge">
+          <label for="captcha">¿Cuánto es {{ captcha.a }} + {{ captcha.b }}?</label>
+          <input type="text" class="form-control" id="captcha" formControlName="captchaAnswer">
+        </div>
+        <!-- Botón de inicio de sesión -->
+        <button class="btn btn-dark espace-up" type="submit" [disabled]="!loginForm.valid || (showCaptchaChallenge && loginForm.get('captchaAnswer')?.value === '')">Login</button>
+        <!-- Enlace para crear cuenta -->
+        <p class="text-center mt-3">
+          ¿No tienes cuenta?
+          <a href="#" (click)="abrirRegistro($event)">Crear una cuenta</a>
+        </p>
+
+        <!-- Modal de registro -->
+        <div class="modal-backdrop" *ngIf="mostrarRegistro">
+          <div class="modal-content">
+            <h4 class="text-center mb-3">Registro de Usuario</h4>
+            <form [formGroup]="registroForm" (ngSubmit)="registrarUsuario()">
+              <div class="form-group">
+                <label for="nombre">Nombre completo</label>
+                <input type="text" class="form-control" id="nombre" formControlName="nombreusuario">
+              </div>
+              <div class="form-group">
+                <label for="email-reg">Correo</label>
+                <input type="email" class="form-control" id="email-reg" formControlName="email">
+              </div>
+              <div class="form-group">
+                <label for="pass-reg">Contraseña</label>
+                <input type="password" class="form-control" id="pass-reg" formControlName="pass">
+              </div>
+              <button class="btn btn-primary mt-2 w-100" type="submit">Registrar</button>
+              <button class="btn btn-link mt-2 w-100" (click)="cerrarRegistro()">Cancelar</button>
+            </form>
+          </div>
+        </div>
+
+      </form>
+    </div>
+  </div>
+</div>
+

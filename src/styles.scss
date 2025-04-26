@@ -1,0 +1,36 @@
+// Importa Bootstrap en los estilos globales
+@import "bootstrap/scss/bootstrap";
+
+.fuente-azul{
+  font-size: 100px;
+  color: #003754;
+  font-weight: bold;
+  margin: auto;
+  text-align: center;
+}
+.fuente-azul-chica{
+  font-size: 50px;
+  color: #003754;
+  font-weight: bold;
+  margin: 0;
+  text-align: left;
+}
+.btn-btn{
+  background-color: #003754;
+  color: white;
+  border-radius: 6px;
+  padding: 10px 20px;
+  display: inline-block;
+}
+.btn-btn:hover{
+  background-color: #4a4857;
+  color: white;
+  border-radius: 6px;
+  padding: 10px 20px;
+  display: inline-block;
+}
+.letrazul{
+  color: #003754 !important;
+  font-size: 20px;
+}
+
