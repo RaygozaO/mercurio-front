@@ -57,3 +57,20 @@ input {
 .checkbox-inline input {
   margin-right: 8px;
 }
+.captcha-box {
+  padding: 10px 15px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  background-color: #adb5bd;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  display: inline-flex;
+  align-items: center;
+  cursor: pointer;
+  user-select: none;
+}
+
+.captcha-checkbox {
+  margin-right: 10px;
+  width: 20px;
+  height: 20px;
+}
