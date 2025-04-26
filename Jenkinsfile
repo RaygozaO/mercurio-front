@@ -18,7 +18,7 @@ pipeline {
         stage('Build Angular') {
       steps {
         dir("${ANGULAR_DIR}") {
-          sh 'npm run build --configuration production'
+          sh 'npx ng build --configuration production'
                 }
             }
         }
