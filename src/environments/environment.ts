@@ -1,7 +1,7 @@
 export const environment = {
   production: false,
   useCaptcha: false,
-  apiBaseUrl: 'http://mercurio.local/api',
+  apiBaseUrl: 'https://farmacia-mercurio.com/api',
   endpoints: {
     login: '/auth/login',
     register: '/auth/register'
