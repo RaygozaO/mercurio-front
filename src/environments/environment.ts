@@ -3,6 +3,7 @@ export const environment = {
   useCaptcha: false,
   apiBaseUrl: 'http://mercurio.local/api',
   endpoints: {
-    login: '/auth/login'
+    login: '/auth/login',
+    register: '/auth/register'
   }
 };

@@ -17,6 +17,7 @@ export class AuthService {
   }
 
   register(data: { nombreusuario: string; email: string; pass: string; id_rol?: number }): Observable<any> {
-    return this.http.post(`${this.apiUrl}/auth/register`, data);
+    return this.http.post(`${this.apiUrl}${environment.endpoints.register}`, data);
   }
+
 }
