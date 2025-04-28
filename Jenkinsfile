@@ -2,9 +2,9 @@ pipeline {
   agent any
 
   environment {
-    BRANCH_NAME = 'main'
+    BRANCH_NAME = 'main' // <-- Definido manualmente
     ANGULAR_DIR = "."
-    BUILD_DIR = "dist/mercurio-front/browser" // <- apuntamos a browser directo
+    BUILD_DIR = "dist/mercurio-front/browser" // <-- Ojo: ahora apuntamos a /browser
   }
 
   stages {
@@ -43,8 +43,8 @@ pipeline {
     stage('Verify Build Output') {
       steps {
         script {
-          if (!fileExists("${BUILD_DIR}/index.html")) {
-            error "Error: No se encontró el index.html en ${BUILD_DIR}. Falló el build."
+          if (!fileExists("${BUILD_DIR}/index.csr.html")) {
+            error "Error: No se encontró el index.csr.html en ${BUILD_DIR}. Falló el build."
           }
         }
       }
