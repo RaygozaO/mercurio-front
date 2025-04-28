@@ -52,17 +52,10 @@ pipeline {
 
     stage('Deploy') {
       steps {
-        // En lugar de chown, solo damos permisos de escritura
-        sh "chmod -R u+w ${DEPLOY_DIR} || true"
-
-        // Ahora borramos sin problema
-        sh "rm -rf ${DEPLOY_DIR}/*"
-
-        // Copiamos nuevo frontend
+        // NO borramos nada
+        // Solo sobreescribimos los archivos
         sh "cp -r ${BUILD_DIR}/* ${DEPLOY_DIR}/"
         sh "cp ${DEPLOY_DIR}/index.csr.html ${DEPLOY_DIR}/index.html"
-
-        // Finalmente, no tocamos permisos de ownership
         sh "chmod -R 755 ${DEPLOY_DIR}"
       }
     }
