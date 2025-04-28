@@ -2,9 +2,9 @@ pipeline {
   agent any
 
   environment {
-    BRANCH_NAME = 'main' // <-- Definido manualmente
+    BRANCH_NAME = 'main'
     ANGULAR_DIR = "."
-    BUILD_DIR = "dist/mercurio-front/browser" // <-- Ojo: ahora apuntamos a /browser
+    BUILD_DIR = "dist/mercurio-front/browser"
   }
 
   stages {
@@ -52,9 +52,18 @@ pipeline {
 
     stage('Deploy') {
       steps {
+        // Primero forzamos permisos para poder borrar
+        sh "chown -R jenkins:jenkins ${DEPLOY_DIR}" // o el usuario correcto de Jenkins
+        sh "chmod -R u+w ${DEPLOY_DIR}"
+
+        // Ahora sí borramos seguro
         sh "rm -rf ${DEPLOY_DIR}/*"
+
+        // Copiamos el nuevo frontend
         sh "cp -r ${BUILD_DIR}/* ${DEPLOY_DIR}/"
         sh "cp ${DEPLOY_DIR}/index.csr.html ${DEPLOY_DIR}/index.html"
+
+        // Finalmente reestablecemos permisos para Nginx
         sh "chown -R www-data:www-data ${DEPLOY_DIR}"
         sh "chmod -R 755 ${DEPLOY_DIR}"
       }
