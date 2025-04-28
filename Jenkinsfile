@@ -4,7 +4,7 @@ pipeline {
   environment {
     BRANCH_NAME = 'main'
     ANGULAR_DIR = "."
-    BUILD_DIR = "dist/mercurio-front/browser"
+    BUILD_DIR = "dist/mercurio-front"
   }
 
   stages {
@@ -43,8 +43,8 @@ pipeline {
     stage('Verify Build Output') {
       steps {
         script {
-          if (!fileExists("${BUILD_DIR}/index.csr.html")) {
-            error "Error: No se encontró el index.csr.html en ${BUILD_DIR}. Falló el build."
+          if (!fileExists("${BUILD_DIR}/index.html")) {
+            error "Error: No se encontró el index.html en ${BUILD_DIR}. Falló el build."
           }
         }
       }
@@ -53,7 +53,6 @@ pipeline {
     stage('Deploy') {
       steps {
         sh "cp -r ${BUILD_DIR}/* ${DEPLOY_DIR}/"
-        sh "cp ${DEPLOY_DIR}/index.csr.html ${DEPLOY_DIR}/index.html"
         sh "chmod -R 755 ${DEPLOY_DIR}"
       }
     }
