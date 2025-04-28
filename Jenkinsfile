@@ -2,9 +2,9 @@ pipeline {
   agent any
 
   environment {
-    BRANCH_NAME = 'main' // <-- Definido manualmente
+    BRANCH_NAME = 'main'
     ANGULAR_DIR = "."
-    BUILD_DIR = "dist/mercurio-front"
+    BUILD_DIR = "dist/mercurio-front/browser" // <- apuntamos a browser directo
   }
 
   stages {
