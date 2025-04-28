@@ -52,8 +52,6 @@ pipeline {
 
     stage('Deploy') {
       steps {
-        // NO borramos nada
-        // Solo sobreescribimos los archivos
         sh "cp -r ${BUILD_DIR}/* ${DEPLOY_DIR}/"
         sh "cp ${DEPLOY_DIR}/index.csr.html ${DEPLOY_DIR}/index.html"
         sh "chmod -R 755 ${DEPLOY_DIR}"
