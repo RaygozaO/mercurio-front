@@ -54,6 +54,7 @@ pipeline {
       steps {
         sh "rm -rf ${DEPLOY_DIR}/*"
         sh "cp -r ${BUILD_DIR}/* ${DEPLOY_DIR}/"
+        sh "cp ${DEPLOY_DIR}/index.csr.html ${DEPLOY_DIR}/index.html"
         sh "chown -R www-data:www-data ${DEPLOY_DIR}"
         sh "chmod -R 755 ${DEPLOY_DIR}"
       }
