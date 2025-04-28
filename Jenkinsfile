@@ -52,19 +52,17 @@ pipeline {
 
     stage('Deploy') {
       steps {
-        // Primero forzamos permisos para poder borrar
-        sh "chown -R jenkins:jenkins ${DEPLOY_DIR}" // o el usuario correcto de Jenkins
-        sh "chmod -R u+w ${DEPLOY_DIR}"
+        // En lugar de chown, solo damos permisos de escritura
+        sh "chmod -R u+w ${DEPLOY_DIR} || true"
 
-        // Ahora sí borramos seguro
+        // Ahora borramos sin problema
         sh "rm -rf ${DEPLOY_DIR}/*"
 
-        // Copiamos el nuevo frontend
+        // Copiamos nuevo frontend
         sh "cp -r ${BUILD_DIR}/* ${DEPLOY_DIR}/"
         sh "cp ${DEPLOY_DIR}/index.csr.html ${DEPLOY_DIR}/index.html"
 
-        // Finalmente reestablecemos permisos para Nginx
-        sh "chown -R www-data:www-data ${DEPLOY_DIR}"
+        // Finalmente, no tocamos permisos de ownership
         sh "chmod -R 755 ${DEPLOY_DIR}"
       }
     }
