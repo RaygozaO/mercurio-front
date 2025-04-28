@@ -1,27 +1,45 @@
 export interface Paciente {
-  idcliente: number; // Si es auto-generado en la base de datos
+  idcliente: number;
   nombrecliente: string;
   apellidopaterno: string;
-  apellidomaterno: string; // Si es opcional
-  telefono: string; // Si es opcional
-  id_usuario: number; // Para relacionar con el usuario
-  id_domicilio: number; // Si es relevante
+  apellidomaterno: string;
+  telefono: string;
+  id_usuario?: number;
+  id_domicilio?: number;
 }
 
 export interface Usuario {
+  idusuario: number;
   nombreusuario: string;
   email: string;
-  password: string; // Considera cifrar esta contraseña antes de enviarla al servidor
+  password: string;
   password2: string;
+  enabled?: boolean;
+  id_rol?: number;
 }
-export interface Domicilio{
-  coloniasSelected: string;
+export interface Colonia {
+  idcolonia: number;
+  nombrecolonia: string;
+  idmunicipio: number;
+  nombremunicipio: string;
+  identidadfederativa: number;
+  nombreentidad: string;
+}
+
+export interface Domicilio {
+  coloniasSelected: Colonia | null;
   iddireccioncliente: number;
   calle: string;
   numero: string;
-  interior?: string;
+  interior: string;
   codigopostal: string;
-  colonias: any[];
+  colonias: Colonia[];
   municipio: string;
   entidad: string;
+
+  // IDs necesarios para insertar:
+  id_cp?: number;
+  id_colonia?: number;
+  id_municipio?: number;
+  id_entidad?: number;
 }

@@ -10,7 +10,6 @@
         <input type="text" class="form-control" placeholder="Buscar por email o nombre" [(ngModel)]="searchTerm" (input)="buscarUsuario()">
         <button class="btn btn-primary" type="button" (click)="buscarUsuario()">Buscar</button>
       </div>
-
       <!-- Resultados de búsqueda -->
       <ul class="list-group" *ngIf="resultadosBusqueda.length > 0">
         <li class="list-group-item" *ngFor="let user of resultadosBusqueda" (click)="seleccionarUsuario(user)">
@@ -67,6 +66,7 @@
             <label class="form-label" for="interior">Interior:</label>
             <input class="form-control" type="text" id="interior" [(ngModel)]="domicilio.interior" name="interior">
           </div>
+          <!-- Código Postal -->
           <div class="col-md-6 mb-3">
             <label class="form-label" for="codigopostal">Código Postal:</label>
             <input class="form-control" type="text" id="codigoPostal"
@@ -74,18 +74,23 @@
                    (ngModelChange)="buscarColoniasPorCP()"
                    name="codigopostal" required>
           </div>
+
+          <!-- Colonias -->
           <div class="col-md-6 mb-3">
             <label class="form-label" for="colonias">Colonias:</label>
-            <select id="colonias" class="form-control" [(ngModel)]="domicilio.coloniasSelected" name="colonias" >
+            <select id="colonias" class="form-control" [(ngModel)]="domicilio.coloniasSelected" name="colonias">
               <option value="" disabled selected>Seleccione Colonia</option>
-              <option *ngFor="let colonia of domicilio.colonias" [value]="colonia">{{ colonia }}</option>
+              <option *ngFor="let colonia of domicilio.colonias" [ngValue]="colonia">
+                {{ colonia.nombrecolonia }}
+              </option>
             </select>
           </div>
-
+          <!-- Municipio -->
           <div class="col-md-6 mb-3">
             <label class="form-label" for="municipio">Municipio:</label>
             <input class="form-control" id="municipio" [(ngModel)]="domicilio.municipio" name="municipio" readonly>
           </div>
+          <!-- Entidad Federativa -->
           <div class="col-md-6 mb-3">
             <label class="form-label" for="entidad">Entidad Federativa:</label>
             <input class="form-control" id="entidad" [(ngModel)]="domicilio.entidad" name="entidad" readonly>
