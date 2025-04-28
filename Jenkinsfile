@@ -32,6 +32,14 @@ pipeline {
       }
     }
 
+    stage('Clean Dist Directory') {
+      steps {
+        dir("${ANGULAR_DIR}") {
+          sh 'rm -rf dist/'
+        }
+      }
+    }
+
     stage('Build Angular') {
       steps {
         dir("${ANGULAR_DIR}") {
