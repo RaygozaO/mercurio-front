@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, FormsModule, Validators } from '@angular/forms';
-import { Paciente, Domicilio, Usuario, Colonia } from './Paciente.model';
+import {Paciente, Domicilio, Usuario, Colonia, Rol} from './Paciente.model';
 import { PacienteService } from '../services/paciente.services';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../environments/environment';
@@ -13,8 +13,14 @@ import { environment } from '../../environments/environment';
   templateUrl: './pacientes.component.html',
   styleUrl: './pacientes.component.scss'
 })
+
 export class PacientesComponent {
   clienteForm: FormGroup;
+  roles: Rol[] = [];
+
+  ngOnInit(): void{
+    this.cargarRoles();
+  }
 
   paciente: Paciente = {
     idcliente: 0,
@@ -31,7 +37,9 @@ export class PacientesComponent {
     nombreusuario: '',
     email: '',
     password: '',
-    password2: ''
+    password2: '',
+    id_rol: 0,
+    enabled: true,
   };
 
   domicilio: Domicilio = {
@@ -136,7 +144,6 @@ export class PacientesComponent {
         return;
       }
 
-      // No usamos clienteForm ya, todo es via ngModel
       const crearPacienteRequest = {
         paciente: {
           nombrecliente: this.paciente.nombrecliente,
@@ -148,7 +155,9 @@ export class PacientesComponent {
           idusuario: this.usuario.idusuario, // si viene ID hacemos UPDATE
           nombreusuario: this.usuario.nombreusuario,
           email: this.usuario.email,
-          password: this.usuario.password
+          password: this.usuario.password,
+          id_rol: this.usuario.id_rol,
+          enabled: 1
         },
         domicilio: {
           calle: this.domicilio.calle,
@@ -162,6 +171,9 @@ export class PacientesComponent {
 
       const clienteResponse = await this.pacienteService.crearPacienteCompleto(crearPacienteRequest);
       console.log('Paciente creado:', clienteResponse);
+
+      console.log('ClienteResponse completo:', JSON.stringify(clienteResponse));
+      console.log('ClienteResponse keys:', Object.keys(clienteResponse));
 
       if (!clienteResponse?.id) {
         throw new Error('No se pudo obtener el ID del paciente creado.');
@@ -207,5 +219,16 @@ export class PacientesComponent {
     };
     this.searchTerm = '';
     this.resultadosBusqueda = [];
+  }
+
+  cargarRoles(): void {
+    this.pacienteService.getRolesActivos().subscribe({
+      next: (res) => {
+        this.roles = res;
+      },
+      error: (err) => {
+        console.error('Error al cargar roles', err);
+      }
+    });
   }
 }

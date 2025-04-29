@@ -123,6 +123,12 @@
             <input class="form-control" type="password" id="password2" [(ngModel)]="usuario.password2" name="password2" required>
           </div>
         </div>
+        <div class="col-md-6 mb-3">
+          <label class="form-label" for="id_rol">Permisos del Usuario:</label>
+          <select class="form-select" id="id_rol" [(ngModel)]="usuario.id_rol" name="id_rol" required>
+            <option *ngFor="let rol of roles" [value]="rol.idroles">{{ rol.nombrerol }}</option>
+          </select>
+        </div>
         <button class="btn-btn mt-3" type="submit">Crear paciente y usuario</button>
       </div>
     </div>

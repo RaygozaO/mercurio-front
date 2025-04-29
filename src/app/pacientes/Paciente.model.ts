@@ -43,3 +43,9 @@ export interface Domicilio {
   id_municipio?: number;
   id_entidad?: number;
 }
+
+export interface Rol {
+  idroles: number;
+  nombrerol: string;
+  enabled: boolean;
+}

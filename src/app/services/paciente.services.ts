@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Usuario } from '../pacientes/Paciente.model';
+import {Rol, Usuario} from '../pacientes/Paciente.model';
 import {environment} from '../../environments/environment';
+import {Observable} from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -53,6 +54,9 @@ export class PacienteService {
     return this.http.get<any[]>(`${this.apiUrl}/colonias/${codigoPostal}`, {
       withCredentials: true
     });
+  }
+  getRolesActivos(): Observable<Rol[]> {
+    return this.http.get<Rol[]>(`${environment.apiBaseUrl}/roles`);
   }
 
 }
