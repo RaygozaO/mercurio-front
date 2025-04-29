@@ -2,29 +2,14 @@ pipeline {
   agent any
 
   environment {
-    BRANCH_NAME = 'main'
-    ANGULAR_DIR = "."
-    BUILD_DIR = "dist/mercurio-front/browser"
+    ANGULAR_DIR = "/var/lib/jenkins/workspace/mercurio-front-deploy"
+    BUILD_DIR = "${ANGULAR_DIR}/dist/mercurio-front/browser"
+    DEPLOY_DIR = "/var/www/mercurio-front"
+    BUILD_CONFIG = "production"
   }
 
   stages {
-    stage('Setup Deploy Directory and Build Mode') {
-      steps {
-        script {
-          if (BRANCH_NAME == 'main') {
-            env.DEPLOY_DIR = "/var/www/mercurio-front"
-            env.BUILD_CONFIG = "production"
-          } else if (BRANCH_NAME == 'development') {
-            env.DEPLOY_DIR = "/var/www/mercurio-front-dev"
-            env.BUILD_CONFIG = "development"
-          } else {
-            error "Branch '${BRANCH_NAME}' no tiene configurado un despliegue."
-          }
-        }
-      }
-    }
-
-    stage('Install Dependencies') {
+    stage('Instalar dependencias') {
       steps {
         dir("${ANGULAR_DIR}") {
           sh 'npm install'
@@ -32,7 +17,7 @@ pipeline {
       }
     }
 
-    stage('Clean Dist Directory') {
+    stage('Limpiar directorio dist') {
       steps {
         dir("${ANGULAR_DIR}") {
           sh 'rm -rf dist/'
@@ -40,7 +25,7 @@ pipeline {
       }
     }
 
-    stage('Build Angular') {
+    stage('Construir aplicación Angular') {
       steps {
         dir("${ANGULAR_DIR}") {
           sh "npx ng build --configuration ${BUILD_CONFIG}"
@@ -48,19 +33,21 @@ pipeline {
       }
     }
 
-    stage('Verify Build Output') {
+    stage('Verificar salida del build') {
       steps {
         script {
           if (!fileExists("${BUILD_DIR}/index.html")) {
-            error "Error: No se encontró el index.html en ${BUILD_DIR}. Falló el build."
+            error "❌ No se encontró el index.html en ${BUILD_DIR}. Falló el build."
           }
         }
       }
     }
 
-    stage('Deploy') {
+    stage('Desplegar en producción') {
       steps {
+        sh "rm -rf ${DEPLOY_DIR}/*"
         sh "cp -r ${BUILD_DIR}/* ${DEPLOY_DIR}/"
+        sh "chown -R www-data:www-data ${DEPLOY_DIR}"
       }
     }
   }
