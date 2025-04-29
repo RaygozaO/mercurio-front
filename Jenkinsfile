@@ -61,7 +61,6 @@ pipeline {
     stage('Deploy') {
       steps {
         sh "cp -r ${BUILD_DIR}/* ${DEPLOY_DIR}/"
-        sh "chmod -R 755 ${DEPLOY_DIR}"
       }
     }
   }
