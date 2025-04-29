@@ -9,9 +9,13 @@ pipeline {
   }
 
   stages {
-    stage('Verifinacdo usuario') {
-      sh 'whoami'
+    stage('Verificando usuario') {
+      steps {
+        sh 'whoami'
+        sh 'id'
+      }
     }
+
     stage('Instalar dependencias') {
       steps {
         dir("${ANGULAR_DIR}") {
@@ -48,9 +52,9 @@ pipeline {
 
     stage('Desplegar en producción') {
       steps {
-        sh "rm -rf ${DEPLOY_DIR}/*"
-        sh "cp -r ${BUILD_DIR}/* ${DEPLOY_DIR}/"
-        sh "chown -R www-data:www-data ${DEPLOY_DIR}"
+        sh "sudo rm -rf ${DEPLOY_DIR}/*"
+        sh "sudo cp -r ${BUILD_DIR}/* ${DEPLOY_DIR}/"
+        sh "sudo chown -R www-data:www-data ${DEPLOY_DIR}"
       }
     }
   }
