@@ -9,6 +9,10 @@ pipeline {
   }
 
   stages {
+    stage('Verifinacdo usuario') {
+      sh 'whoami'
+    }
+   }
     stage('Instalar dependencias') {
       steps {
         dir("${ANGULAR_DIR}") {
