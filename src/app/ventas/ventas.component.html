@@ -1,1 +1,27 @@
-<p>ventas works!</p>
+<!-- ventas.component.html -->
+
+<input [(ngModel)]="filtro" placeholder="🔍 Buscar producto" class="form-control mb-3"/>
+
+<div class="row">
+  <div class="col-md-6">
+    <div *ngFor="let producto of productosFiltrados()" class="producto-card">
+      <h5>{{ producto.nombre }}</h5>
+      <p>Presentación: {{ producto.presentacion }}</p>
+      <p>Precio: ${{ producto.precio }}</p>
+      <button (click)="agregarAlCarrito(producto)" class="btn btn-primary">Agregar al carrito</button>
+    </div>
+  </div>
+
+  <div class="col-md-6">
+    <h3>🛒 Carrito</h3>
+    <ul class="list-group">
+      <li *ngFor="let item of carritoService.obtenerCarrito()" class="list-group-item">
+        {{ item.producto.nombre }} x {{ item.cantidad }} = ${{ item.producto.precio * item.cantidad }}
+        <button (click)="carritoService.eliminar(item.producto.idproductos)" class="btn btn-sm btn-danger float-end">Eliminar</button>
+      </li>
+    </ul>
+    <h4 class="mt-3">💵 Total: ${{ total() }}</h4>
+  </div>
+</div>
+
+
