@@ -1,1 +1,48 @@
-<p>inventario works!</p>
+<div class="container mt-3">
+  <h2>📦 Inventario de Productos</h2>
+
+  <!-- Botón para crear producto -->
+  <button routerLink="/admin/inventario/crear" class="btn btn-primary mb-3">➕ Agregar producto nuevo</button>
+  <!--<a [routerLink]="['/admin/inventario/crear']" class="btn btn-primary mb-3">➕ Agregar producto nuevo</a>-->
+
+  <!-- 🔍 Cuadro de búsqueda -->
+  <input [(ngModel)]="filtro" placeholder="Buscar producto..." class="form-control mb-3" />
+
+  <!-- Tabla de productos -->
+  <table class="table table-striped">
+    <thead>
+    <tr>
+      <th>Nombre</th>
+      <th>Precio</th>
+      <th>Stock</th>
+      <th>Estatus</th>
+      <th>Acciones</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr *ngFor="let producto of productosFiltrados()">
+      <td>{{ producto.nombre }}</td>
+      <td>${{ producto.precio }}</td>
+      <td>
+        {{ producto.stock }}
+        <span *ngIf="producto.stock <= 3" class="badge bg-danger">¡Resurtir!</span>
+      </td>
+      <td>
+        <span [class.text-success]="producto.enabled" [class.text-danger]="!producto.enabled">
+          {{ producto.enabled ? 'Activo' : 'Inactivo' }}
+        </span>
+      </td>
+      <td>
+        <button [routerLink]="['/admin/inventario/editar', producto.idproductos]" class="btn btn-sm btn-warning">✏️ Editar</button>
+      </td>
+    </tr>
+    </tbody>
+  </table>
+
+  <router-outlet></router-outlet>
+  <!-- Link a faltantes -->
+  <div class="mt-3">
+    <button routerLink="/admin/inventario/faltantes" class="btn btn-outline-danger">📋 Ver lista de faltantes</button>
+  </div>
+</div>
+

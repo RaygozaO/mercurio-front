@@ -1,0 +1,36 @@
+<div #crearModal class="modal fade" tabindex="-1" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">➕ Crear producto</h5>
+        <button type="button" class="btn-close" (click)="cerrarModal()"></button>
+      </div>
+      <div class="modal-body">
+        <form (ngSubmit)="guardarProducto()">
+          <div class="mb-3">
+            <label>Nombre:</label>
+            <input type="text" class="form-control" [(ngModel)]="producto.nombre" name="nombre">
+          </div>
+          <div class="mb-3">
+            <label>Precio:</label>
+            <input type="number" class="form-control" [(ngModel)]="producto.precio" name="precio">
+          </div>
+          <div class="mb-3">
+            <label>Código de Barras:</label>
+            <input type="text" class="form-control" [(ngModel)]="producto.codigobar" name="codigobar">
+          </div>
+          <div class="mb-3">
+            <label>Presentación:</label>
+            <input type="text" class="form-control" [(ngModel)]="producto.presentacion" name="presentacion">
+          </div>
+          <div class="mb-3">
+            <label>Gramaje:</label>
+            <input type="text" class="form-control" [(ngModel)]="producto.gramaje" name="gramaje">
+          </div>
+          <button type="submit" class="btn btn-primary">Guardar</button>
+          <button type="button" class="btn btn-secondary" (click)="cerrarModal()">Cancelar</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

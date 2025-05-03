@@ -1,0 +1,30 @@
+<div #faltantesModal class="modal fade" tabindex="-1" role="dialog">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">⚠️ Productos Faltantes</h5>
+        <button type="button" class="btn-close" (click)="cerrarModal()"></button>
+      </div>
+      <div class="modal-body">
+        <table class="table table-striped">
+          <thead>
+          <tr>
+            <th>Nombre</th>
+            <th>Stock</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr *ngFor="let producto of productosFaltantes">
+            <td>{{ producto.nombre }}</td>
+            <td>{{ producto.numexistencia }}</td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-primary" (click)="imprimirPDF()">🖨️ Imprimir PDF</button>
+        <button type="button" class="btn btn-secondary" (click)="cerrarModal()">Cerrar</button>
+      </div>
+    </div>
+  </div>
+</div>

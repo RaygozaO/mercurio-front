@@ -3,7 +3,7 @@ import { Producto } from './producto.model';
 import { CarritoService } from './carrito.services';
 import { ProductoService } from './producto.services';
 import { FormsModule } from '@angular/forms';
-import {NgForOf, NgIf, NgOptimizedImage} from '@angular/common';
+import {NgForOf, NgIf} from '@angular/common';
 
 @Component({
   selector: 'app-ventas',
@@ -33,7 +33,7 @@ export class VentasComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    this.logoUrl = window.location.origin + 'assets/logo_factura.png';
+    this.logoUrl = window.location.origin + '/assets/logo_factura.png';
     this.productoService.obtenerProductos().subscribe({
       next: (datos) => {
         this.productos = datos;
