@@ -1,10 +1,12 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, FormsModule, Validators } from '@angular/forms';
-import {Paciente, Domicilio, Usuario, Colonia, Rol} from './Paciente.model';
+import { Paciente, Domicilio, Usuario, Colonia, Rol } from './Paciente.model';
 import { PacienteService } from '../services/paciente.services';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../environments/environment';
+import { EspecialidadService } from '../services/especialidad.services';
+import {response} from 'express';
 
 @Component({
   selector: 'app-pacientes',
@@ -13,14 +15,9 @@ import { environment } from '../../environments/environment';
   templateUrl: './pacientes.component.html',
   styleUrl: './pacientes.component.scss'
 })
-
 export class PacientesComponent {
   clienteForm: FormGroup;
   roles: Rol[] = [];
-
-  ngOnInit(): void{
-    this.cargarRoles();
-  }
 
   paciente: Paciente = {
     idcliente: 0,
@@ -43,6 +40,7 @@ export class PacientesComponent {
   };
 
   domicilio: Domicilio = {
+    id_codigopostal: 0,
     coloniasSelected: null,
     iddireccioncliente: 0,
     calle: '',
@@ -54,6 +52,13 @@ export class PacientesComponent {
     entidad: '',
   };
 
+  medico = {
+    cedula: '',
+    telefono: '',
+    idespecialidad: null
+  };
+
+  especialidades: any[] = [];
   searchTerm: string = '';
   resultadosBusqueda: any[] = [];
   emailDisabled: boolean = false;
@@ -61,7 +66,8 @@ export class PacientesComponent {
   constructor(
     private fb: FormBuilder,
     private pacienteService: PacienteService,
-    private http: HttpClient
+    private http: HttpClient,
+    private especialidadService: EspecialidadService,
   ) {
     this.clienteForm = this.fb.group({
       nombrecliente: ['', Validators.required],
@@ -74,26 +80,35 @@ export class PacientesComponent {
     });
   }
 
+  ngOnInit(): void {
+    this.cargarRoles();
+    this.cargarEspecialidades();
+  }
+
   buscarColoniasPorCP() {
     if (this.domicilio.codigopostal && this.domicilio.codigopostal.length === 5) {
       this.pacienteService.obtenerColoniasPorCP(this.domicilio.codigopostal).subscribe(
         (response) => {
-          if (Array.isArray(response)) {
+          if (Array.isArray(response) && response.length > 0) {
             this.domicilio.colonias = response;
-            if (response.length > 0) {
-              this.domicilio.municipio = response[0].nombremunicipio;
-              this.domicilio.entidad = response[0].nombreentidad;
+            const primeraColonia = response[0];
+            this.domicilio.coloniasSelected = primeraColonia;
+
+            if (primeraColonia) {
+              this.onColoniaChange(primeraColonia); // ✅ Tipo garantizado: Colonia
             }
           } else {
-            console.error('La respuesta no es un array', response);
+            console.warn('⚠️ No se encontraron colonias para este CP');
+            this.domicilio.colonias = [];
           }
         },
         (error) => {
-          console.error('Error al obtener colonias', error);
+          console.error('❌ Error al obtener colonias:', error);
         }
       );
     }
   }
+
 
   buscarUsuario() {
     if (this.searchTerm.trim().length === 0) {
@@ -108,9 +123,31 @@ export class PacientesComponent {
       });
   }
 
-  onColoniaChange() {
-    console.log('Colonia seleccionada:', this.domicilio.coloniasSelected);
+  cargarEspecialidades() {
+    this.especialidadService.getEspecialidades().subscribe(data => {
+      this.especialidades = data;
+    });
   }
+
+  //onColoniaChange() {
+  //  console.log('Colonia seleccionada:', this.domicilio.coloniasSelected);
+  //}
+  onColoniaChange(colonia: Colonia): void {
+    if (!colonia) return;
+
+    this.domicilio.coloniasSelected = colonia;
+    this.domicilio.municipio = colonia.nombremunicipio;
+    this.domicilio.entidad = colonia.nombreentidad;
+    this.domicilio.id_colonia = colonia.idcolonia;
+    this.domicilio.id_municipio = colonia.idmunicipio;
+    this.domicilio.id_codigopostal = colonia.id_codigopostal;
+    this.domicilio.id_entidad = colonia.identidadfederativa;
+
+    console.log('🧠 Colonia seleccionada:', colonia);
+    console.log('📦 Domicilio armado:', this.domicilio);
+  }
+
+
 
   seleccionarUsuario(user: any) {
     this.usuario.idusuario = user.idusuario;
@@ -144,7 +181,7 @@ export class PacientesComponent {
         return;
       }
 
-      const crearPacienteRequest = {
+      const crearPacienteRequest: any = {
         paciente: {
           nombrecliente: this.paciente.nombrecliente,
           apellidopaterno: this.paciente.apellidopaterno,
@@ -152,7 +189,7 @@ export class PacientesComponent {
           telefono: this.paciente.telefono
         },
         usuario: {
-          idusuario: this.usuario.idusuario, // si viene ID hacemos UPDATE
+          idusuario: this.usuario.idusuario,
           nombreusuario: this.usuario.nombreusuario,
           email: this.usuario.email,
           password: this.usuario.password,
@@ -163,12 +200,24 @@ export class PacientesComponent {
           calle: this.domicilio.calle,
           numero: this.domicilio.numero,
           interior: this.domicilio.interior,
-          coloniasSelected: this.domicilio.coloniasSelected.nombrecolonia
+          id_colonia: this.domicilio.id_colonia,
+          id_municipio: this.domicilio.id_municipio,
+          id_codigopostal: this.domicilio.id_codigopostal,
+          id_entidad: this.domicilio.id_entidad
         }
       };
+      console.log('🏥 Domicilio enviado:', crearPacienteRequest.domicilio);
+      if (String(this.usuario.id_rol) === '5') {
+        crearPacienteRequest.medico = {
+          cedula: this.medico.cedula,
+          telefono: this.medico.telefono,
+          idespecialidad: this.medico.idespecialidad
+        };
+      }
 
       console.log('Datos enviados a crearPaciente:', crearPacienteRequest);
-
+      console.log('🏥 Domicilio enviado:', crearPacienteRequest.domicilio);
+      console.log('🧠 Colonia seleccionada:', this.domicilio.coloniasSelected);
       const clienteResponse = await this.pacienteService.crearPacienteCompleto(crearPacienteRequest);
       console.log('Paciente creado:', clienteResponse);
 
@@ -188,7 +237,6 @@ export class PacientesComponent {
     }
   }
 
-
   resetForm() {
     this.paciente = {
       idcliente: 0,
@@ -204,9 +252,12 @@ export class PacientesComponent {
       nombreusuario: '',
       email: '',
       password: '',
-      password2: ''
+      password2: '',
+      id_rol: 0,
+      enabled: true
     };
     this.domicilio = {
+      id_codigopostal: 0,
       coloniasSelected: null,
       iddireccioncliente: 0,
       calle: '',

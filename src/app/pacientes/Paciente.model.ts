@@ -18,6 +18,7 @@ export interface Usuario {
   id_rol?: number;
 }
 export interface Colonia {
+  id_codigopostal: number;
   idcolonia: number;
   nombrecolonia: string;
   idmunicipio: number;
@@ -27,6 +28,7 @@ export interface Colonia {
 }
 
 export interface Domicilio {
+  id_codigopostal: number;
   coloniasSelected: Colonia | null;
   iddireccioncliente: number;
   calle: string;

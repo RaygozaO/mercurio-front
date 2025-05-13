@@ -19,6 +19,11 @@ export const routes: Routes = [
         data: { roles: [1, 2] }
       },
       {
+        path: 'citas',
+        loadComponent: () => import('./citas/calendario-citas/calendario-citas.component').then(m => m.CalendarioCitasComponent),
+        data: { roles: [1, 2, 5, 6] } // acceso admin (1), admin2 (2), medico (5)
+      },
+      {
         path: 'inventario',
         loadComponent: () => import('./inventario/inventario.component').then(m => m.InventarioComponent),
         data: { roles: [1, 2] },
@@ -47,7 +52,7 @@ export const routes: Routes = [
             path: 'faltantes',
             loadComponent: () => import('./inventario/faltantes-producto/faltantesProducto.component').then(m => m.FaltantesProductoComponent),
             data: { roles: [1, 2] }
-          }
+          },
         ]
       },
       {

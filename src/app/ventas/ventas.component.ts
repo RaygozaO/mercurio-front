@@ -61,21 +61,21 @@ export class VentasComponent implements OnInit {
   pagarConEfectivo() {
     const totalCompra = this.total();
     if (this.pagoEfectivo < totalCompra) {
-      alert('⚠️ El pago es insuficiente.');
+      alert('El pago es insuficiente.');
       return;
     }
     this.cambio = this.pagoEfectivo - totalCompra;
     this.facturaGenerada = true;
     this.fechaFactura = new Date().toLocaleString();
 
-    // 🔥 Generar cadena CFDI simulada
+
     const uuid = this.generarUUID();
     this.cadenaCfdi = `||1.0|${uuid}|${this.fechaFactura}|${this.total().toFixed(2)}|ABC123456789||`;
 
-    // 🔥 Generar URL QR usando API
+
     this.qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(this.cadenaCfdi)}`;
 
-    alert('✅ Pago realizado con éxito.');
+    alert('Pago realizado con éxito.');
   }
 
   generarUUID(): string {
@@ -106,5 +106,4 @@ export class VentasComponent implements OnInit {
     ventana?.document.close();
     ventana?.print();
   }
-
 }

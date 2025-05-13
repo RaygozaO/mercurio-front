@@ -1,6 +1,12 @@
 // Importa Bootstrap en los estilos globales
 @import "bootstrap/scss/bootstrap";
 
+html, body {
+  overflow: visible !important;
+  height: 100% !important;
+  position: relative !important;
+}
+
 .fuente-azul{
   font-size: 100px;
   color: #003754;

@@ -78,8 +78,18 @@
           <!-- Colonias -->
           <div class="col-md-6 mb-3">
             <label class="form-label" for="colonias">Colonias:</label>
-            <select id="colonias" class="form-control" [(ngModel)]="domicilio.coloniasSelected" name="colonias">
+            <!--<select id="colonias" class="form-control" [(ngModel)]="domicilio.coloniasSelected" name="colonias">
               <option value="" disabled selected>Seleccione Colonia</option>
+              <option *ngFor="let colonia of domicilio.colonias" [ngValue]="colonia">
+                {{ colonia.nombrecolonia }}
+              </option>
+            </select>-->
+            <select id="colonias"
+                    class="form-control"
+                    [(ngModel)]="domicilio.coloniasSelected"
+                    name="colonias"
+                    (ngModelChange)="onColoniaChange($event)">
+              <option [ngValue]="null" disabled selected>Seleccione Colonia</option>
               <option *ngFor="let colonia of domicilio.colonias" [ngValue]="colonia">
                 {{ colonia.nombrecolonia }}
               </option>
@@ -128,6 +138,22 @@
           <select class="form-select" id="id_rol" [(ngModel)]="usuario.id_rol" name="id_rol" required>
             <option *ngFor="let rol of roles" [value]="rol.idroles">{{ rol.nombrerol }}</option>
           </select>
+        </div>
+        <div *ngIf="usuario.id_rol == 5" class="row">
+          <div class="col-md-6 mb-3">
+            <label class="form-label">Teléfono:</label>
+            <input class="form-control" type="text" [(ngModel)]="medico.telefono" name="telefono">
+          </div>
+          <div class="col-md-6 mb-3">
+            <label class="form-label">Cédula Profesional:</label>
+            <input class="form-control" type="text" [(ngModel)]="medico.cedula" name="cedula">
+          </div>
+          <div class="col-md-6 mb-3">
+            <label class="form-label">Especialidad:</label>
+            <select class="form-select" [(ngModel)]="medico.idespecialidad" name="idespecialidad" style="color: #3e3e53">
+              <option *ngFor="let e of especialidades" [value]="e.idesepecialidad">{{ e.nombreespecialidad }}</option>
+            </select>
+          </div>
         </div>
         <button class="btn-btn mt-3" type="submit">Crear paciente y usuario</button>
       </div>

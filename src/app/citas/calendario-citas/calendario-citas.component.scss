@@ -1,0 +1,25 @@
+.calendar-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 5px;
+  margin-top: 20px;
+}
+
+.day-name, .calendar-day {
+  text-align: center;
+  padding: 10px;
+  border: 1px solid #ccc;
+  cursor: pointer;
+  border-radius: 6px;
+}
+.color_day{
+  background-color: #BBC499;
+  color: #003754;
+}
+.color_azul{
+  color: #003754 !important;
+}
+.empty {
+  background-color: transparent;
+  border: none;
+}

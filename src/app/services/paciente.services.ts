@@ -12,15 +12,6 @@ export class PacienteService {
 
   constructor(private http: HttpClient) {}
 
-  crearCliente(cliente: {
-    nombrecliente: any;
-    apellidopaterno: any;
-    apellidomaterno: any;
-    telefono: any;
-    id_usuario: number
-  }) {
-    return this.http.post<any>(`${this.apiUrl}/pacientes/crear`, cliente).toPromise();
-  }
   crearPacienteCompleto(data: {
     paciente: any,
     usuario: any,
@@ -51,7 +42,8 @@ export class PacienteService {
   }
 
   obtenerColoniasPorCP(codigoPostal: string) {
-    return this.http.get<any[]>(`${this.apiUrl}/colonias/${codigoPostal}`, {
+    //return this.http.get<any[]>(`${this.apiUrl}/colonias/${codigoPostal}`, {
+    return this.http.get<any[]>(`${this.apiUrl}/pacientes/colonias/${codigoPostal}`, {
       withCredentials: true
     });
   }
