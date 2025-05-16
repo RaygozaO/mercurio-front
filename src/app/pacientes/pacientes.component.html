@@ -78,12 +78,6 @@
           <!-- Colonias -->
           <div class="col-md-6 mb-3">
             <label class="form-label" for="colonias">Colonias:</label>
-            <!--<select id="colonias" class="form-control" [(ngModel)]="domicilio.coloniasSelected" name="colonias">
-              <option value="" disabled selected>Seleccione Colonia</option>
-              <option *ngFor="let colonia of domicilio.colonias" [ngValue]="colonia">
-                {{ colonia.nombrecolonia }}
-              </option>
-            </select>-->
             <select id="colonias"
                     class="form-control"
                     [(ngModel)]="domicilio.coloniasSelected"
@@ -133,15 +127,27 @@
             <input class="form-control" type="password" id="password2" [(ngModel)]="usuario.password2" name="password2" required>
           </div>
         </div>
-        <div class="col-md-6 mb-3">
-          <label class="form-label" for="id_rol">Permisos del Usuario:</label>
-          <select class="form-select" id="id_rol" [(ngModel)]="usuario.id_rol" name="id_rol" required>
-            <option *ngFor="let rol of roles" [value]="rol.idroles">{{ rol.nombrerol }}</option>
-          </select>
+
+        <div class="row">
+          <!-- Permisos -->
+          <div class="col-md-6 mb-3">
+            <label class="form-label" for="id_rol">Permisos del Usuario:</label>
+            <select class="form-select" id="id_rol" [(ngModel)]="usuario.id_rol" name="id_rol" required>
+              <option *ngFor="let rol of roles" [value]="rol.idroles">{{ rol.nombrerol }}</option>
+            </select>
+          </div>
+
+          <!-- Turnos (horarios) -->
+          <div *ngIf="usuario.id_rol == 5" class="col-md-6 mb-3">
+            <label class="form-label">Turno:</label>
+            <select class="form-select" [(ngModel)]="medico.id_turno" name="id_turno">
+              <option *ngFor="let t of turnos" [value]="t.idhorarios">{{ t.nombre_horario }}</option>
+            </select>
+          </div>
         </div>
         <div *ngIf="usuario.id_rol == 5" class="row">
           <div class="col-md-6 mb-3">
-            <label class="form-label">Teléfono:</label>
+            <label class="form-label">Teléfono de emergencia:</label>
             <input class="form-control" type="text" [(ngModel)]="medico.telefono" name="telefono">
           </div>
           <div class="col-md-6 mb-3">

@@ -1,6 +1,6 @@
 import { Component, OnInit, AfterViewInit, ElementRef, ViewChild } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { NgForOf, NgIf } from '@angular/common';
+import {NgForOf, NgIf, NgStyle} from '@angular/common';
 import { CitasService } from '../citas.service';
 
 declare var bootstrap: any;
@@ -10,7 +10,7 @@ declare var bootstrap: any;
   standalone: true,
   templateUrl: './calendario-citas.component.html',
   styleUrls: ['./calendario-citas.component.scss'],
-  imports: [FormsModule,  NgForOf]
+  imports: [FormsModule, NgForOf, NgIf, NgStyle]
 })
 export class CalendarioCitasComponent implements OnInit, AfterViewInit {
   constructor(private citas: CitasService) {
@@ -65,7 +65,7 @@ export class CalendarioCitasComponent implements OnInit, AfterViewInit {
     const mes = String(this.mesSeleccionado + 1).padStart(2, '0');
     const diaStr = String(dia).padStart(2, '0');
     this.fechaSeleccionada = `${this.anioSeleccionado}-${mes}-${diaStr}`;
-
+    this.cargarCitasDelDia(this.fechaSeleccionada);
     if (this.bsModal) {
       this.bsModal.show();
     }
@@ -79,15 +79,47 @@ export class CalendarioCitasComponent implements OnInit, AfterViewInit {
 
 
   guardarCita(): void {
-    this.listaCitas.push({
-      fecha: this.fechaSeleccionada,
-      motivo: this.nuevoMotivo,
-      hora: this.nuevaHora,
-      idmedico: this.doctorSeleccionado
-    });
+    const idCliente = Number(localStorage.getItem('id_cliente'));
+    console.log(idCliente);
 
-    if (this.bsModal) {
-      this.bsModal.hide();
+    if (!idCliente || !this.doctorSeleccionado || !this.nuevaHora || !this.fechaSeleccionada) {
+      alert('Faltan datos para guardar la cita');
+      return;
     }
+
+    const nuevaCita = {
+      title: this.nuevoMotivo || 'Cita médica',
+      start: this.fechaSeleccionada,
+      horacita: this.nuevaHora,
+      end: this.fechaSeleccionada,
+      color: '#00aaff', // puedes hacerlo dinámico si quieres
+      id_cliente: idCliente,
+      id_usuario: this.doctorSeleccionado,
+      id_horario: 2,
+      enabled: true
+    };
+
+    this.citas.crearCita(nuevaCita).subscribe({
+      next: (res) => {
+        console.log('✅ Cita creada', res);
+        this.bsModal.hide();
+      },
+      error: (err) => {
+        console.error('❌ Error al guardar cita', err);
+      }
+    });
   }
+
+  cargarCitasDelDia(fecha: string): void {
+    this.citas.getCitasPorFecha(fecha).subscribe({
+      next: (data) => {
+        console.log('Citas recibidas',data);
+        this.listaCitas = data;
+      },
+      error: (err) => {
+        console.error('❌ Error al cargar citas del día:', err);
+      }
+    });
+  }
+
 }

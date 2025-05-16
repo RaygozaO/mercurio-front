@@ -37,8 +37,8 @@ export class PacienteService {
     return this.http.put<any>(`${this.apiUrl}/usuarios/actualizar/${usuario.idusuario}`, usuario).toPromise();
   }
 
-  buscarUsuario(term: string) {
-    return this.http.get<Usuario[]>(`${this.apiUrl}/usuarios/buscar?term=${term}`).toPromise();
+  buscarPaciente(term: string) {
+    return this.http.get<any[]>(`${this.apiUrl}/pacientes/paciente/${term}`);
   }
 
   obtenerColoniasPorCP(codigoPostal: string) {

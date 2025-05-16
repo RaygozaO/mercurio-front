@@ -1,1 +1,70 @@
-<p>recetas works!</p>
+<div class="container mt-3">
+  <h3>Crear Receta Médica</h3>
+
+  <form [formGroup]="recetaForm" (ngSubmit)="guardarReceta()">
+    <div class="mb-3">
+      <label class="form-label">Doctor(a):</label>
+      <select class="form-select" formControlName="idmedico">
+        <option disabled selected value="">Seleccione un médico</option>
+        <option *ngFor="let d of doctores" [value]="d.idusuario">
+          {{ d.nombrecliente }}
+        </option>
+      </select>
+    </div>
+    <div class="mb-3">
+      <label>Buscar Paciente:</label>
+      <input type="text" [(ngModel)]="searchTerm" [ngModelOptions]="{standalone: true}" (input)="buscarPaciente()" class="form-control">
+      <ul class="list-group" *ngIf="resultadosBusqueda.length > 0">
+        <li *ngFor="let p of resultadosBusqueda" (click)="seleccionarPaciente(p)" class="list-group-item list-group-item-action">
+          {{ p.nombrecliente }} {{ p.apellidopaterno }} {{ p.apellidomaterno }}
+        </li>
+      </ul>
+    </div>
+    <div class="mb-3">
+      <label>Historial</label>
+      <textarea formControlName="historial" class="form-control" rows="2"></textarea>
+    </div>
+    <div class="mb-3">
+      <label>Resumen clínico</label>
+      <textarea formControlName="resumenclinico" class="form-control" rows="3"></textarea>
+    </div>
+    <h5>Medicamentos</h5>
+    <hr>
+    <div class="mb-3">
+      <label>Medicamentos:</label>
+      <input type="text" [(ngModel)]="busquedaProducto" [ngModelOptions]="{standalone: true}" (input)="filtrarProductos()" class="form-control" placeholder="Escribe el nombre del producto">
+
+      <ul class="list-group" *ngIf="productosFiltrados.length > 0">
+        <li *ngFor="let p of productosFiltrados" (click)="onSeleccionarProducto(p.idproductos)" class="list-group-item list-group-item-action">
+          {{ p.nombre }}
+        </li>
+      </ul>
+    </div>
+
+    <ul class="list-group">
+      <li *ngFor="let prod of productosFormGroups; let i = index" [formGroup]="prod" class="list-group-item">
+        {{ prod.get('nombre')?.value }} -
+        Cantidad:
+        <input type="number" formControlName="cantidad" min="1"
+               class="form-control d-inline w-auto ms-2 me-2"
+               [class.is-invalid]="prod.get('cantidad')?.invalid && prod.get('cantidad')?.touched">
+
+        <div *ngIf="prod.get('cantidad')?.errors?.['min'] && prod.get('cantidad')?.touched" class="invalid-feedback">
+          La cantidad debe ser mayor o igual a 1.
+        </div>
+
+        <button type="button" class="btn btn-danger btn-sm" (click)="eliminarProducto(i)">Eliminar</button>
+      </li>
+    </ul>
+
+    <div class="mb-3">
+      <label>Indicaciones</label>
+      <textarea formControlName="indicaciones" class="form-control" rows="2"></textarea>
+    </div>
+
+    <div class="mt-4">
+      <button type="submit" class="btn btn-success">Guardar Receta</button>
+    </div>
+  </form>
+</div>
+

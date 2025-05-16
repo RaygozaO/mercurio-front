@@ -13,8 +13,8 @@ export class CitasService {
   getCitasPorMedico(idmedico: number | string | null) {
     return this.http.get<any[]>(`${this.apiUrl}/medico/${idmedico}`)
   }
-  getTodasLasCitas(){
-    return this.http.get<any[]>(`${this.apiUrl}`);
+  getCitasPorFecha(fecha: string) {
+    return this.http.get<any[]>(`${this.apiUrl}/fecha/${fecha}`);
   }
   crearCita(cita: any) {
     return this.http.post<any>(this.apiUrl, cita);

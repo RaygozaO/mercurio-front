@@ -57,7 +57,7 @@ export class LoginComponent {
     }
   }
 
-  onSubmit() {
+ /* onSubmit() {
     const { email, clave_log, captchaAnswer } = this.loginForm.value;
 
     if (!this.showCaptchaChallenge || parseInt(captchaAnswer) !== this.captchaExpected) {
@@ -82,7 +82,47 @@ export class LoginComponent {
           alert('Error en el inicio de sesión. Verifica tus credenciales.');
         }
       });
+  }*/
+  onSubmit() {
+    const { email, clave_log, captchaAnswer } = this.loginForm.value;
+
+    if (!this.showCaptchaChallenge || parseInt(captchaAnswer) !== this.captchaExpected) {
+      alert('Captcha incorrecto.');
+      return;
+    }
+
+    this.authService.login(email, clave_log, captchaAnswer, this.captchaExpected.toString())
+      .subscribe({
+        next: (res) => {
+          localStorage.setItem('token', res.token);
+          localStorage.setItem('role', res.role.toString());
+
+          // 🟢 Guarda también el ID de usuario
+          if (res.idusuario) {
+            localStorage.setItem('id_usuario', res.idusuario.toString());
+          }
+
+          // 🟢 Y si viene el ID del cliente (por ejemplo, si es paciente)
+          if (res.idcliente) {
+            localStorage.setItem('id_cliente', res.idcliente.toString());
+          }
+
+          // Redirección según rol
+          switch (res.role) {
+            case 1: this.router.navigate(['/admin']); break;
+            case 2: this.router.navigate(['/admin/ventas']); break;
+            case 3: this.router.navigate(['/pacientes']); break;
+            case 4: this.router.navigate(['/admin/inventario']); break;
+            case 5: this.router.navigate(['/admin/citas']); break;
+            default: this.router.navigate(['/']);
+          }
+        },
+        error: () => {
+          alert('Error en el inicio de sesión. Verifica tus credenciales.');
+        }
+      });
   }
+
 
   registrarUsuario() {
     if (this.registroForm.valid) {
@@ -111,3 +151,7 @@ export class LoginComponent {
   }
 
 }
+
+
+
+

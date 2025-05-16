@@ -6,7 +6,7 @@ import { PacienteService } from '../services/paciente.services';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../environments/environment';
 import { EspecialidadService } from '../services/especialidad.services';
-import {response} from 'express';
+import { HorariosService, Horario } from '../services/horarios.service';
 
 @Component({
   selector: 'app-pacientes',
@@ -18,7 +18,7 @@ import {response} from 'express';
 export class PacientesComponent {
   clienteForm: FormGroup;
   roles: Rol[] = [];
-
+  turnos: Horario[] = [];
   paciente: Paciente = {
     idcliente: 0,
     nombrecliente: '',
@@ -55,7 +55,8 @@ export class PacientesComponent {
   medico = {
     cedula: '',
     telefono: '',
-    idespecialidad: null
+    idespecialidad: null,
+    id_turno: null
   };
 
   especialidades: any[] = [];
@@ -68,6 +69,7 @@ export class PacientesComponent {
     private pacienteService: PacienteService,
     private http: HttpClient,
     private especialidadService: EspecialidadService,
+    private horariosService: HorariosService,
   ) {
     this.clienteForm = this.fb.group({
       nombrecliente: ['', Validators.required],
@@ -83,6 +85,7 @@ export class PacientesComponent {
   ngOnInit(): void {
     this.cargarRoles();
     this.cargarEspecialidades();
+    this.cargarHorarios();
   }
 
   buscarColoniasPorCP() {
@@ -128,10 +131,13 @@ export class PacientesComponent {
       this.especialidades = data;
     });
   }
+  cargarHorarios() {
+    this.horariosService.obtenerHorarios().subscribe({
+      next: (data) => this.turnos = data,
+      error: (err) => console.error('Error cargando horarios', err)
+    });
+  }
 
-  //onColoniaChange() {
-  //  console.log('Colonia seleccionada:', this.domicilio.coloniasSelected);
-  //}
   onColoniaChange(colonia: Colonia): void {
     if (!colonia) return;
 
@@ -206,23 +212,17 @@ export class PacientesComponent {
           id_entidad: this.domicilio.id_entidad
         }
       };
-      console.log('🏥 Domicilio enviado:', crearPacienteRequest.domicilio);
       if (String(this.usuario.id_rol) === '5') {
         crearPacienteRequest.medico = {
           cedula: this.medico.cedula,
           telefono: this.medico.telefono,
-          idespecialidad: this.medico.idespecialidad
+          idespecialidad: this.medico.idespecialidad,
+          id_turno: this.medico.id_turno
         };
       }
 
-      console.log('Datos enviados a crearPaciente:', crearPacienteRequest);
-      console.log('🏥 Domicilio enviado:', crearPacienteRequest.domicilio);
-      console.log('🧠 Colonia seleccionada:', this.domicilio.coloniasSelected);
       const clienteResponse = await this.pacienteService.crearPacienteCompleto(crearPacienteRequest);
-      console.log('Paciente creado:', clienteResponse);
 
-      console.log('ClienteResponse completo:', JSON.stringify(clienteResponse));
-      console.log('ClienteResponse keys:', Object.keys(clienteResponse));
 
       if (!clienteResponse?.id) {
         throw new Error('No se pudo obtener el ID del paciente creado.');
