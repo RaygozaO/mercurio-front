@@ -4,8 +4,18 @@ import { ProductoService } from '../ventas/producto.services';
 import {NgForOf, NgIf} from '@angular/common';
 import { CitasService } from '../citas/citas.service';
 import { PacienteService } from '../services/paciente.services';
-import { RecetaService } from '../services/receta.services'; // ajusta la ruta si es diferente
+import { RecetaService } from '../services/receta.services';
+import jsPDF from 'jspdf';
+import autoTable from 'jspdf-autotable';
+import logoBase64 from '../../assets/base64/logo_base64';
+import { QRCode } from 'qrcode';
 
+
+interface jsPDFWithAutoTable extends jsPDF {
+  lastAutoTable?: {
+    finalY?: number;
+  };
+}
 
 
 @Component({
@@ -19,15 +29,19 @@ import { RecetaService } from '../services/receta.services'; // ajusta la ruta s
   templateUrl: './recetas.component.html',
   styleUrl: './recetas.component.scss'
 })
-export class RecetasComponent implements OnInit{
+export class RecetasComponent implements OnInit {
   recetaForm!: FormGroup;
   productosDisponibles: any[] = [];
   doctores: any[] = [];
-  doctorSeleccionado: string = '';
   searchTerm = '';
   resultadosBusqueda: any[] = [];
   busquedaProducto = '';
   productosFiltrados: any[] = [];
+  listaPacientes: any[] = [];
+  listaMedicos: any[] = [];
+  pacienteActual: any = null;
+  medicoActual: any = null;
+  medicamentos: any[] = [];
 
 
   constructor(
@@ -36,7 +50,8 @@ export class RecetasComponent implements OnInit{
     private citas: CitasService,
     private pacienteService: PacienteService,
     private recetaService: RecetaService,
-  ) {}
+  ) {
+  }
 
   ngOnInit(): void {
     this.recetaForm = this.fb.group({
@@ -51,14 +66,32 @@ export class RecetasComponent implements OnInit{
     this.productosService.obtenerProductos().subscribe((res) => {
       this.productosDisponibles = res;
     });
+
     this.cargarDoctores();
   }
 
   cargarDoctores(): void {
     this.citas.getDoctores().subscribe((data: any[]) => {
+      console.log('Doctores cargados: ', data);
       this.doctores = data;
     });
   }
+
+  seleccionarMedico(event: any): void {
+    const idMedicoSeleccionado = +event.target.value;
+    console.log('🔎 ID seleccionado:', idMedicoSeleccionado);
+    console.log('🧾 Doctores disponibles:', this.doctores);
+
+    const medicoEncontrado = this.doctores.find(m => m.idmedico === idMedicoSeleccionado);
+
+    this.medicoActual = {
+      nombreusuario: medicoEncontrado?.nombrecliente || 'N/A',
+      cedula: medicoEncontrado?.cedula || 'N/A'
+    };
+
+    console.log('👨‍⚕️ Médico seleccionado:', this.medicoActual);
+  }
+
   buscarPaciente(): void {
     if (this.searchTerm.trim().length === 0) {
       this.resultadosBusqueda = [];
@@ -79,6 +112,7 @@ export class RecetasComponent implements OnInit{
     this.recetaForm.patchValue({
       idpaciente: paciente.idcliente
     });
+    this.pacienteActual = paciente; // ✅ ← Aquí guardamos al paciente actual
     this.resultadosBusqueda = [];
     this.searchTerm = `${paciente.nombrecliente} ${paciente.apellidopaterno}`;
   }
@@ -86,6 +120,7 @@ export class RecetasComponent implements OnInit{
   get productos(): FormArray {
     return this.recetaForm.get('productos') as FormArray;
   }
+
   get productosFormGroups(): FormGroup[] {
     return this.productos.controls as FormGroup[];
   }
@@ -167,4 +202,99 @@ export class RecetasComponent implements OnInit{
     }
   }
 
+  imprimirReceta() {
+    const doc = new jsPDF() as jsPDFWithAutoTable;
+    const pageWidth = doc.internal.pageSize.getWidth();
+    const receta = this.recetaForm.value;
+    const fechaActual = new Date().toLocaleDateString();
+
+    const paciente = this.pacienteActual || {nombrecliente: 'N/A'};
+    const medico = this.medicoActual || {nombreusuario: 'N/A', cedula: 'N/A'};
+
+    // Logo
+    doc.addImage(logoBase64, 'PNG', 160, 10, 20, 20);
+
+    // Encabezado
+    doc.setFontSize(18);
+    doc.setFont('helvetica', 'bold');
+    doc.text('RECETA MÉDICA', pageWidth / 2, 20, {align: 'center'});
+    doc.setLineWidth(0.5);
+    doc.line(20, 30, pageWidth - 20, 30);
+
+    doc.setFontSize(12);
+    doc.setFont('helvetica', 'normal');
+    doc.text(`Fecha: ${fechaActual}`, 150, 45);
+
+    // Paciente
+    doc.setFont('helvetica', 'bold');
+    doc.text('Paciente:', 20, 55);
+    doc.setFont('helvetica', 'normal');
+    doc.text(paciente.nombrecliente, 50, 55);
+
+    // Médico
+    doc.setFont('helvetica', 'bold');
+    doc.text('Médico:', 20, 65);
+    doc.setFont('helvetica', 'normal');
+    doc.text(medico.nombreusuario, 50, 65);
+
+    // Cédula
+    doc.setFont('helvetica', 'bold');
+    doc.text('Cédula:', 20, 75);
+    doc.setFont('helvetica', 'normal');
+    doc.text(medico.cedula, 50, 75);
+
+    // Resumen clínico
+    doc.setFont('helvetica', 'bold');
+    doc.text('Resumen clínico:', 20, 85);
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(11);
+    doc.text(receta.resumenclinico || 'N/A', 20, 93, {maxWidth: 170});
+
+    const medicamentos: { nombre: string }[] = (receta.productos || []).map((p: any) => ({
+      nombre: p.nombre || 'Sin nombre'
+    }));
+
+    let afterTableY = 110;
+    if (medicamentos.length > 0) {
+      autoTable(doc, {
+        startY: afterTableY,
+        head: [['Medicamento']],
+        body: medicamentos.map(m => [m.nombre])
+      });
+
+      const lastTable = (doc as any).lastAutoTable;
+      afterTableY = lastTable?.finalY || afterTableY + 20;
+    }
+
+
+    // Indicaciones
+    doc.setFontSize(12);
+    doc.setFont('helvetica', 'bold');
+    doc.text('Indicaciones:', 20, afterTableY + 10);
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(11);
+    doc.text(receta.indicaciones || 'N/A', 20, afterTableY + 18, {maxWidth: 170});
+
+    // Firma
+    doc.setLineWidth(0.2);
+    doc.line(20, 250, 100, 250);
+    doc.text('Firma del médico', 20, 255);
+
+    // Dirección dividida
+    doc.setFontSize(10);
+    doc.text('Benito Juárez Mza. 130 lote 8, Col. Miguel Hidalgo,', 20, 265);
+    doc.text('C.P. 55490, Ecatepec, Edo. de México', 20, 272);
+    // QR
+    const qrTexto = `Receta para ${paciente.nombrecliente} - ${fechaActual}`;
+    import('qrcode').then(QRCode => {
+      QRCode.toDataURL(qrTexto, {width: 100}, (err, qrBase64) => {
+        if (!err && qrBase64) {
+          doc.addImage(qrBase64, 'PNG', pageWidth - 50, 250, 30, 30);
+        } else {
+          console.error('Error generando QR', err);
+        }
+        doc.save(`receta_${fechaActual.replace(/\//g, '-')}.pdf`);
+      });
+    });
+  }
 }

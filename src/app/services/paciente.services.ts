@@ -36,6 +36,9 @@ export class PacienteService {
   actualizarUsuario(usuario: { idusuario: number; nombreusuario: any; email: any; password: any }) {
     return this.http.put<any>(`${this.apiUrl}/usuarios/actualizar/${usuario.idusuario}`, usuario).toPromise();
   }
+  obtenerTodos(): Observable<any[]> {
+    return this.http.get<any[]>(`${this.apiUrl}/pacientes`);
+  }
 
   buscarPaciente(term: string) {
     return this.http.get<any[]>(`${this.apiUrl}/pacientes/paciente/${term}`);

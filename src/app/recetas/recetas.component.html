@@ -3,11 +3,11 @@
 
   <form [formGroup]="recetaForm" (ngSubmit)="guardarReceta()">
     <div class="mb-3">
-      <label class="form-label">Doctor(a):</label>
-      <select class="form-select" formControlName="idmedico">
-        <option disabled selected value="">Seleccione un médico</option>
-        <option *ngFor="let d of doctores" [value]="d.idusuario">
-          {{ d.nombrecliente }}
+      <label for="idmedico">Médico</label>
+      <select class="form-control" formControlName="idmedico" (change)="seleccionarMedico($event)">
+        <option value="">-- Selecciona un médico --</option>
+        <option *ngFor="let medico of doctores" [value]="medico.idmedico">
+          {{ medico.nombrecliente }}
         </option>
       </select>
     </div>
@@ -65,6 +65,10 @@
     <div class="mt-4">
       <button type="submit" class="btn btn-success">Guardar Receta</button>
     </div>
+    <div class="mt-3">
+      <button type="button" class="btn btn-outline-primary" (click)="imprimirReceta()">🖨️ Imprimir Receta</button>
+    </div>
+
   </form>
 </div>
 
