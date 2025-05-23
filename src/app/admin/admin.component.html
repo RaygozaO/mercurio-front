@@ -4,28 +4,51 @@
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
   <div class="container-fluid margin-nav">
     <a class="navbar-brand letra-azul" href="#">Farmacia Mercurio</a>
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
+
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
       <ul class="navbar-nav me-auto mb-2 mb-lg-0">
         <li class="nav-item">
-          <a class="letrazul nav-link active" aria-current="page" href="#">Inicio</a>
+          <a class="letrazul nav-link" [routerLink]="['/admin']">Inicio</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link letrazul" href="#">Datos Personales</a>
+          <a class="nav-link letrazul" [routerLink]="['/admin/personales']">Datos Personales</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link active letrazul" [routerLink]="['/admin/citas']">Citas Médicas</a>
+          <a class="nav-link letrazul" [routerLink]="['/admin/citas']">Citas Médicas</a>
         </li>
       </ul>
-      <form class="d-flex">
-        <input class="form-control me-2" type="search" placeholder="Ingresa busqueda ..." aria-label="Search">
-        <button class="btn-btn" type="submit">Buscar</button>
+
+      <!-- Formulario de búsqueda -->
+      <form class="d-flex position-relative" (ngSubmit)="buscar()">
+        <input class="form-control me-2"
+               type="search"
+               name="termino"
+               [(ngModel)]="terminoBusqueda"
+               (ngModelChange)="filtrarSugerencias()"
+               placeholder="Ingresa búsqueda..."
+               aria-label="Search"
+               autocomplete="off">
+
+        <button class="btn btn-outline-success" type="submit">Buscar</button>
+
+        <!-- Lista de sugerencias -->
+        <ul *ngIf="sugerencias.length > 0" class="list-group position-absolute mt-5 w-100 shadow" style="z-index: 1000;">
+          <li *ngFor="let sugerencia of sugerencias"
+              class="list-group-item list-group-item-action"
+              (click)="seleccionarSugerencia(sugerencia)">
+            {{ sugerencia }}
+          </li>
+        </ul>
       </form>
     </div>
   </div>
 </nav>
+
 <div class="dashboard-container">
   <!-- Contenedor del dashboard con menú lateral y contenido dinámico -->
   <div class="dashboard-content">
@@ -62,6 +85,14 @@
           </a>
           <ul class="dropdown-menu" aria-labelledby="DropdownReceta">
             <li><a class="dropdown-item" [routerLink]="['/admin/recetas']">Recetas por cliente</a></li>
+          </ul>
+        </li>
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle btn-dropdown" href="#" id="DropdownReferecia" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            Referencia médica
+          </a>
+          <ul class="dropdown-menu" aria-labelledby="DropdownReferencia">
+            <li><a class="dropdown-item" [routerLink]="['/admin/referencia']">Referencia por médico</a></li>
           </ul>
         </li>
       </ul>

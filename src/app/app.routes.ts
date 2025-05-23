@@ -74,7 +74,13 @@ export const routes: Routes = [
         path: 'recetas',
         loadComponent: () => import('./recetas/recetas.component').then(m => m.RecetasComponent),
         data: { roles: [1, 2, 3] }
+      },
+      {
+        path: 'referencia',
+        loadComponent: () => import('./referencia/referencia.component').then(m => m.ReferenciaComponent),
+        data: { roles: [1, 2, 5] } // ajusta según los roles que deban ver el módulo
       }
+
     ]
   },
   {

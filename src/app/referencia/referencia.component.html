@@ -1,0 +1,48 @@
+<h2>📋 Crear Referencia Médica</h2>
+<form (ngSubmit)="crearReferencia()">
+  <div class="mb-3">
+    <label for="idmedico_destino">ID Médico Destino</label>
+    <input type="number" [(ngModel)]="referencia.idmedico_destino" name="idmedico_destino" class="form-control" required>
+  </div>
+
+  <div class="mb-3">
+    <label for="idpaciente">ID Paciente</label>
+    <input type="number" [(ngModel)]="referencia.idpaciente" name="idpaciente" class="form-control" required>
+  </div>
+
+  <div class="mb-3">
+    <label for="motivo">Motivo</label>
+    <textarea [(ngModel)]="referencia.motivo" name="motivo" class="form-control" required></textarea>
+  </div>
+
+  <button type="submit" class="btn btn-primary">Guardar Referencia</button>
+</form>
+
+<hr>
+
+<h3>📄 Referencias Registradas</h3>
+<table class="table table-striped">
+  <thead>
+  <tr>
+    <th>ID</th>
+    <th>Origen</th>
+    <th>Destino</th>
+    <th>Paciente</th>
+    <th>Motivo</th>
+    <th>Fecha</th>
+    <th>Estado</th>
+  </tr>
+  </thead>
+  <tbody>
+  <tr *ngFor="let r of referencias">
+    <td>{{ r.idreferencia }}</td>
+    <td>{{ r.medico_origen }}</td>
+    <td>{{ r.medico_destino }}</td>
+    <td>{{ r.paciente }}</td>
+    <td>{{ r.motivo }}</td>
+    <td>{{ r.fecha_referencia | date:'short' }}</td>
+    <td>{{ r.estado }}</td>
+  </tr>
+  </tbody>
+</table>
+
