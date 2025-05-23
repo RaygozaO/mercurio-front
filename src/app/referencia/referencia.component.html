@@ -1,13 +1,25 @@
 <h2>📋 Crear Referencia Médica</h2>
 <form (ngSubmit)="crearReferencia()">
   <div class="mb-3">
-    <label for="idmedico_destino">ID Médico Destino</label>
-    <input type="number" [(ngModel)]="referencia.idmedico_destino" name="idmedico_destino" class="form-control" required>
+    <label for="idmedico_destino">Médico Destino</label>
+    <select [(ngModel)]="referencia.idmedico_destino" name="idmedico_destino" class="form-control" required>
+      <option [ngValue]="null">Seleccione un médico</option>
+      <option *ngFor="let doctor of doctores" [value]="doctor.idmedico">
+        {{ doctor.nombrecliente }}
+      </option>
+    </select>
   </div>
-
   <div class="mb-3">
-    <label for="idpaciente">ID Paciente</label>
-    <input type="number" [(ngModel)]="referencia.idpaciente" name="idpaciente" class="form-control" required>
+    <label>Buscar Paciente:</label>
+    <input type="text" [(ngModel)]="searchPaciente" name="searchPaciente" class="form-control" (input)="buscarPaciente()" />
+
+    <ul class="list-group" *ngIf="resultadosPaciente.length > 0">
+      <li *ngFor="let p of resultadosPaciente"
+          (click)="seleccionarPaciente(p)"
+          class="list-group-item list-group-item-action">
+        {{ p.nombrecliente }} {{ p.apellidopaterno }} {{ p.apellidomaterno }}
+      </li>
+    </ul>
   </div>
 
   <div class="mb-3">
@@ -17,6 +29,7 @@
 
   <button type="submit" class="btn btn-primary">Guardar Referencia</button>
 </form>
+
 
 <hr>
 

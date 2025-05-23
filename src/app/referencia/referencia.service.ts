@@ -15,9 +15,13 @@ export interface Referencia {
 
 @Injectable({ providedIn: 'root' })
 export class ReferenciaService {
-  private baseUrl = `${environment.apiBaseUrl}/referencias`; // ajusta a tu API real
+  private baseUrl = `${environment.apiBaseUrl}/referencias`;
 
   constructor(private http: HttpClient) {}
+
+  getDoctores(): Observable<any[]> {
+    return this.http.get<any[]>(`${this.baseUrl}/medicos`);
+  }
 
   crearReferencia(ref: Referencia): Observable<any> {
     return this.http.post(`${this.baseUrl}/crear`, ref);
