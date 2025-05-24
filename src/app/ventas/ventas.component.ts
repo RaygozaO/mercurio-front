@@ -86,6 +86,16 @@ export class VentasComponent implements OnInit {
       return v.toString(16);
     });
   }
+  reiniciarVenta() {
+    this.carritoService.limpiar();
+    this.pagoEfectivo = 0;
+    this.cambio = 0;
+    this.facturaGenerada = false;
+    this.fechaFactura = new Date().toLocaleString();
+    this.cadenaCfdi = '';
+    this.qrUrl = '';
+    this.folioFactura = undefined;
+  }
 
 
   imprimirFactura() {
@@ -107,5 +117,6 @@ export class VentasComponent implements OnInit {
     ventana?.document.write('</body></html>');
     ventana?.document.close();
     ventana?.print();
+    this.reiniciarVenta();
   }
 }
