@@ -2,6 +2,7 @@ import { Component, ElementRef, ViewChild, AfterViewInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { InventarioService } from '../../services/inventario.services';
+import {AlertaService} from '../../services/alerta.service';
 
 declare var bootstrap: any;
 import jsPDF from 'jspdf';
@@ -19,7 +20,10 @@ export class FaltantesProductoComponent implements AfterViewInit {
   modalInstance: any;
   productosFaltantes: any[] = [];
 
-  constructor(private router: Router, private inventarioService: InventarioService) {}
+  constructor(private router: Router,
+              private inventarioService: InventarioService,
+              private alerta: AlertaService
+  ) {}
 
   ngAfterViewInit(): void {
     this.modalInstance = new bootstrap.Modal(this.modal.nativeElement);
@@ -35,11 +39,10 @@ export class FaltantesProductoComponent implements AfterViewInit {
   cargarFaltantes(): void {
     this.inventarioService.obtenerFaltantes().subscribe({
       next: (res) => {
-        console.log('Productos faltantes:', res);
         this.productosFaltantes = res;
       },
       error: (err) => {
-        console.error('Error al cargar faltantes:', err);
+        this.alerta.error('Error al cargar faltantes ');
       }
     });
   }

@@ -9,6 +9,7 @@ import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
 import logoBase64 from '../../assets/base64/logo_base64';
 import { QRCode } from 'qrcode';
+import {AlertaService} from '../services/alerta.service';
 
 
 interface jsPDFWithAutoTable extends jsPDF {
@@ -50,6 +51,7 @@ export class RecetasComponent implements OnInit {
     private citas: CitasService,
     private pacienteService: PacienteService,
     private recetaService: RecetaService,
+    private alerta: AlertaService
   ) {
   }
 
@@ -103,7 +105,7 @@ export class RecetasComponent implements OnInit {
         console.log('📋 Pacientes encontrados:', data);
         this.resultadosBusqueda = data;
       },
-      error: (err) => console.error('Error buscando paciente:', err)
+      error: (err) => this.alerta.error('Error buscando paciente ')
     });
   }
 
@@ -152,14 +154,13 @@ export class RecetasComponent implements OnInit {
 
   guardarReceta(): void {
     if (this.productos.length === 0) {
-      alert('Debes agregar al menos un producto a la receta.');
+      this.alerta.warning('Debes agregar al menos un producto a la receta.');
       return;
     }
     if (this.recetaForm.invalid) {
       alert('Faltan datos requeridos o hay errores de validación.');
       this.recetaForm.markAllAsTouched();
-      console.warn('❌ Formulario inválido:', this.recetaForm.value);
-      console.warn('🧩 Estado de validación:', this.recetaForm);
+      this.alerta.warning('❌ Formulario inválido:');
       return;
     }
 
@@ -176,18 +177,17 @@ export class RecetasComponent implements OnInit {
       }))
     };
 
-    console.log('📤 Enviando receta:', recetaPayload);
 
     this.recetaService.guardarReceta(recetaPayload).subscribe({
       next: (res) => {
         console.log('✅ Receta guardada correctamente', res);
-        alert('Receta guardada correctamente.');
+        this.alerta.success('Receta guardada correctamente.');
         this.recetaForm.reset();
         this.productos.clear();
       },
       error: (err) => {
         console.error('❌ Error al guardar receta:', err);
-        alert('Error al guardar receta');
+        this.alerta.error('Error al guardar receta');
       }
     });
   }
@@ -291,7 +291,7 @@ export class RecetasComponent implements OnInit {
         if (!err && qrBase64) {
           doc.addImage(qrBase64, 'PNG', pageWidth - 50, 250, 30, 30);
         } else {
-          console.error('Error generando QR', err);
+          this.alerta.error('Error generando QR');
         }
         doc.save(`receta_${fechaActual.replace(/\//g, '-')}.pdf`);
       });

@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 import { HttpClientModule } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
 import { AuthService } from '../services/auth.service';
+import {AlertaService} from '../services/alerta.service';
 
 @Component({
   selector: 'app-login',
@@ -30,7 +31,8 @@ export class LoginComponent {
   constructor(
     private fb: FormBuilder,
     private authService: AuthService,
-    private router: Router
+    private router: Router,
+    private alerta: AlertaService
   ) {
     this.loginForm = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
@@ -87,7 +89,7 @@ export class LoginComponent {
     const { email, clave_log, captchaAnswer } = this.loginForm.value;
 
     if (!this.showCaptchaChallenge || parseInt(captchaAnswer) !== this.captchaExpected) {
-      alert('Captcha incorrecto.');
+      this.alerta.error('Captcha incorrecto.');
       return;
     }
 
@@ -97,17 +99,14 @@ export class LoginComponent {
           localStorage.setItem('token', res.token);
           localStorage.setItem('role', res.role.toString());
 
-          // 🟢 Guarda también el ID de usuario
           if (res.idusuario) {
             localStorage.setItem('id_usuario', res.idusuario.toString());
           }
 
-          // 🟢 Y si viene el ID del cliente (por ejemplo, si es paciente)
           if (res.idcliente) {
             localStorage.setItem('id_cliente', res.idcliente.toString());
           }
 
-          // Redirección según rol
           switch (res.role) {
             case 1: this.router.navigate(['/admin']); break;
             case 2: this.router.navigate(['/admin/ventas']); break;
@@ -118,7 +117,7 @@ export class LoginComponent {
           }
         },
         error: () => {
-          alert('Error en el inicio de sesión. Verifica tus credenciales.');
+          this.alerta.error('Error en el inicio de sesión. Verifica tus credenciales.');
         }
       });
   }
@@ -128,15 +127,15 @@ export class LoginComponent {
     if (this.registroForm.valid) {
       this.authService.register(this.registroForm.value).subscribe({
         next: () => {
-          alert('Usuario registrado exitosamente');
+          this.alerta.success('Usuario registrado exitosamente');
           this.cerrarRegistro();
         },
         error: () => {
-          alert('Error al registrar usuario');
+          this.alerta.error('Error al registrar usuario');
         }
       });
     } else {
-      alert('Por favor, completa todos los campos del formulario');
+      this.alerta.warning('Por favor, completa todos los campos del formulario');
     }
   }
 

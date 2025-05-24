@@ -2,8 +2,9 @@ import { Component, ElementRef, ViewChild, AfterViewInit } from '@angular/core';
 import { Router } from '@angular/router';
 import {FormsModule} from '@angular/forms';
 import {InventarioService} from '../../services/inventario.services';
+import {AlertaService} from '../../services/alerta.service';
 
-declare var bootstrap: any; // importante para usar la instancia JS de Bootstrap
+declare var bootstrap: any;
 
 @Component({
   selector: 'app-crear-producto',
@@ -25,7 +26,8 @@ export class CrearProductoComponent implements AfterViewInit {
     gramaje: ''
   };
 
-  constructor(private router: Router, private inventarioService: InventarioService) {}
+  constructor(private router: Router, private inventarioService: InventarioService,
+              private alerta: AlertaService) {}
 
   ngAfterViewInit() {
     this.modalInstance = new bootstrap.Modal(this.modal.nativeElement);
@@ -42,11 +44,11 @@ export class CrearProductoComponent implements AfterViewInit {
 
     this.inventarioService.crearProducto(this.producto).subscribe({
       next: (res) => {
-        console.log('Producto creado:', res);
+        this.alerta.info('Producto creado');
         this.cerrarModal();
       },
       error: (err) => {
-        console.error('Error al crear producto:', err);
+        this.alerta.error('Error al crear producto:');
       }
     });
   }

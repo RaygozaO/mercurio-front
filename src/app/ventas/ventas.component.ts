@@ -4,6 +4,7 @@ import { CarritoService } from './carrito.services';
 import { ProductoService } from './producto.services';
 import { FormsModule } from '@angular/forms';
 import {NgForOf, NgIf} from '@angular/common';
+import {AlertaService} from '../services/alerta.service';
 
 @Component({
   selector: 'app-ventas',
@@ -29,7 +30,8 @@ export class VentasComponent implements OnInit {
 
   constructor(
     public carritoService: CarritoService,
-    private productoService: ProductoService
+    private productoService: ProductoService,
+    private alerta: AlertaService
   ) {}
 
   ngOnInit() {
@@ -39,7 +41,7 @@ export class VentasComponent implements OnInit {
         this.productos = datos;
       },
       error: (error) => {
-        console.error('Error al cargar productos', error);
+        this.alerta.error('Error al cargar productos');
       }
     });
   }
@@ -61,7 +63,7 @@ export class VentasComponent implements OnInit {
   pagarConEfectivo() {
     const totalCompra = this.total();
     if (this.pagoEfectivo < totalCompra) {
-      alert('El pago es insuficiente.');
+      this.alerta.error('El pago es insuficiente.');
       return;
     }
     this.cambio = this.pagoEfectivo - totalCompra;
@@ -75,7 +77,7 @@ export class VentasComponent implements OnInit {
 
     this.qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(this.cadenaCfdi)}`;
 
-    alert('Pago realizado con éxito.');
+    this.alerta.success('Pago realizado con éxito.');
   }
 
   generarUUID(): string {

@@ -2,6 +2,7 @@ import { Component, ElementRef, ViewChild, AfterViewInit, OnInit } from '@angula
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { InventarioService } from '../../services/inventario.services';
+import {AlertaService} from '../../services/alerta.service';
 
 declare var bootstrap: any;
 
@@ -29,7 +30,8 @@ export class EditarProductoComponent implements AfterViewInit, OnInit {
   constructor(
     private route: ActivatedRoute,
     private router: Router,
-    private inventarioService: InventarioService
+    private inventarioService: InventarioService,
+    private alerta: AlertaService
   ) {}
 
   ngOnInit(): void {
@@ -42,7 +44,7 @@ export class EditarProductoComponent implements AfterViewInit, OnInit {
         this.producto = res; // asumimos que devuelve el producto completo
       },
       error: (err) => {
-        console.error('Error al cargar producto:', err);
+        this.alerta.error('Error al cargar producto ');
       }
     });
   }
@@ -58,15 +60,15 @@ export class EditarProductoComponent implements AfterViewInit, OnInit {
   }
 
   guardarCambios() {
-    console.log('Guardando cambios de producto:', this.producto);
+    this.alerta.warning('Guardando cambios de producto:');
 
     this.inventarioService.actualizarProducto(this.idProducto, this.producto).subscribe({
       next: (res) => {
-        console.log('✅ Producto actualizado:', res);
+        this.alerta.warning('✅ Producto actualizado ');
         this.cerrarModal();
       },
       error: (err) => {
-        console.error('Error al actualizar producto:', err);
+        this.alerta.error('Error al actualizar producto:');
       }
     });
   }

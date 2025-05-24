@@ -2,6 +2,7 @@ import { Component, OnInit, AfterViewInit, ElementRef, ViewChild } from '@angula
 import { FormsModule } from '@angular/forms';
 import {NgForOf, NgIf, NgStyle} from '@angular/common';
 import { CitasService } from '../citas.service';
+import {AlertaService} from '../../services/alerta.service';
 
 declare var bootstrap: any;
 
@@ -13,7 +14,7 @@ declare var bootstrap: any;
   imports: [FormsModule, NgForOf, NgIf, NgStyle]
 })
 export class CalendarioCitasComponent implements OnInit, AfterViewInit {
-  constructor(private citas: CitasService) {
+  constructor(private citas: CitasService,private alerta: AlertaService) {
   }
 
   diasSemana = ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'];
@@ -36,7 +37,7 @@ export class CalendarioCitasComponent implements OnInit, AfterViewInit {
 
   ngOnInit(): void {
     const anioActual = new Date().getFullYear();
-    this.anios = Array.from({length: 5}, (_, i) => anioActual - 0 + i);
+    this.anios = Array.from({length: 5}, (_, i) => anioActual - 1 + i);
     this.generarDiasDelMes();
     this.cargarDoctores();
   }
@@ -83,7 +84,7 @@ export class CalendarioCitasComponent implements OnInit, AfterViewInit {
     console.log(idCliente);
 
     if (!idCliente || !this.doctorSeleccionado || !this.nuevaHora || !this.fechaSeleccionada) {
-      alert('Faltan datos para guardar la cita');
+      this.alerta.warning('Faltan datos para guardar la cita');
       return;
     }
 
@@ -101,11 +102,11 @@ export class CalendarioCitasComponent implements OnInit, AfterViewInit {
 
     this.citas.crearCita(nuevaCita).subscribe({
       next: (res) => {
-        console.log('✅ Cita creada', res);
+        this.alerta.info('✅ Cita creada');
         this.bsModal.hide();
       },
       error: (err) => {
-        console.error('❌ Error al guardar cita', err);
+        this.alerta.error('❌ Error al guardar cita');
       }
     });
   }
@@ -117,7 +118,7 @@ export class CalendarioCitasComponent implements OnInit, AfterViewInit {
         this.listaCitas = data;
       },
       error: (err) => {
-        console.error('❌ Error al cargar citas del día:', err);
+        this.alerta.error('❌ Error al cargar citas del día:');
       }
     });
   }

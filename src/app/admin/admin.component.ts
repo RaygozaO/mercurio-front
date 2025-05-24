@@ -12,24 +12,47 @@ import { CommonModule } from '@angular/common';
 })
 export class AdminComponent {
   terminoBusqueda = '';
-  sugerencias: string[] = [];
+  sugerencias: any[] = [];
 
-  opciones = ['recetas', 'pacientes', 'citas', 'inventario'];
+  opciones = [
+    { nombre: 'recetas', icono: '📄', ruta: '/admin/recetas', categoria: 'Clínico' },
+    { nombre: 'pacientes', icono: '🧑‍🤝‍🧑', ruta: '/admin/pacientes', categoria: 'Clínico' },
+    { nombre: 'citas', icono: '📅', ruta: '/admin/citas', categoria: 'Clínico' },
+    { nombre: 'referencias médicas', icono: '🔁', ruta: '/admin/referencia', categoria: 'Clínico' },
+
+    { nombre: 'inventario', icono: '📦', ruta: '/admin/inventario', categoria: 'Administrativo' },
+    { nombre: 'ventas', icono: '🛒', ruta: '/admin/ventas', categoria: 'Administrativo' },
+    { nombre: 'compras', icono: '📥', ruta: '/admin/compras', categoria: 'Administrativo' },
+    { nombre: 'clientes', icono: '🙋‍♂️', ruta: '/admin/clientes', categoria: 'Administrativo' },
+
+    { nombre: 'usuarios', icono: '👤', ruta: '/admin/usuarios', categoria: 'Sistema' },
+    { nombre: 'historial', icono: '🗂', ruta: '/admin/historial', categoria: 'Clínico' },
+    { nombre: 'reservas', icono: '📆', ruta: '/admin/reservas', categoria: 'Clínico' },
+    { nombre: 'reportes', icono: '📊', ruta: '/admin/reportes', categoria: 'Administrativo' },
+    { nombre: 'configuración', icono: '⚙️', ruta: '/admin', categoria: 'Sistema' },
+    { nombre: 'estadísticas', icono: '📈', ruta: '/admin', categoria: 'Administrativo' },
+    { nombre: 'perfil', icono: '🙍', ruta: '/admin/personales', categoria: 'Sistema' },
+    { nombre: 'inicio', icono: '🏠', ruta: '/admin', categoria: 'General' },
+    { nombre: 'medico', icono: '😷', ruta: '/admin/recetas', categoria: 'Clínico' },
+  ];
+
 
   constructor(private router: Router) {}
 
   filtrarSugerencias() {
     const termino = this.terminoBusqueda.toLowerCase().trim();
     this.sugerencias = termino
-      ? this.opciones.filter(op => op.includes(termino))
+      ? this.opciones.filter(op => op.nombre.includes(termino))
       : [];
   }
 
-  seleccionarSugerencia(sugerencia: string) {
-    this.terminoBusqueda = sugerencia;
+
+  seleccionarSugerencia(sugerencia: any) {
+    this.terminoBusqueda = sugerencia.nombre;
     this.sugerencias = [];
-    this.buscar();
+    this.router.navigate([sugerencia.ruta]);
   }
+
 
   buscar() {
     const termino = this.terminoBusqueda.toLowerCase().trim();

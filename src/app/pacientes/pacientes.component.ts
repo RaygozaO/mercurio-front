@@ -7,6 +7,8 @@ import { HttpClient } from '@angular/common/http';
 import { environment } from '../../environments/environment';
 import { EspecialidadService } from '../services/especialidad.services';
 import { HorariosService, Horario } from '../services/horarios.service';
+import {AlertaService} from '../services/alerta.service';
+
 
 @Component({
   selector: 'app-pacientes',
@@ -70,6 +72,7 @@ export class PacientesComponent {
     private http: HttpClient,
     private especialidadService: EspecialidadService,
     private horariosService: HorariosService,
+    private alerta: AlertaService
   ) {
     this.clienteForm = this.fb.group({
       nombrecliente: ['', Validators.required],
@@ -101,12 +104,12 @@ export class PacientesComponent {
               this.onColoniaChange(primeraColonia); // ✅ Tipo garantizado: Colonia
             }
           } else {
-            console.warn('⚠️ No se encontraron colonias para este CP');
+            this.alerta.warning('⚠️ No se encontraron colonias para este CP');
             this.domicilio.colonias = [];
           }
         },
         (error) => {
-          console.error('❌ Error al obtener colonias:', error);
+          this.alerta.error('❌ Error al obtener colonias:');
         }
       );
     }
@@ -122,7 +125,7 @@ export class PacientesComponent {
     this.http.get<any[]>(`${environment.apiBaseUrl}/pacientes/buscar/${this.searchTerm}`)
       .subscribe({
         next: (data) => this.resultadosBusqueda = data,
-        error: (error) => console.error('Error buscando usuario:', error)
+        error: (error) => this.alerta.error('Error buscando usuario:')
       });
   }
 
@@ -134,7 +137,7 @@ export class PacientesComponent {
   cargarHorarios() {
     this.horariosService.obtenerHorarios().subscribe({
       next: (data) => this.turnos = data,
-      error: (err) => console.error('Error cargando horarios', err)
+      error: (err) => this.alerta.error('Error cargando horarios')
     });
   }
 
@@ -149,8 +152,6 @@ export class PacientesComponent {
     this.domicilio.id_codigopostal = colonia.id_codigopostal;
     this.domicilio.id_entidad = colonia.identidadfederativa;
 
-    console.log('🧠 Colonia seleccionada:', colonia);
-    console.log('📦 Domicilio armado:', this.domicilio);
   }
 
 
@@ -173,17 +174,17 @@ export class PacientesComponent {
   async onSubmit() {
     try {
       if (this.usuario.password !== this.usuario.password2) {
-        alert('Las contraseñas no coinciden');
+        this.alerta.warning('Las contraseñas no coinciden');
         return;
       }
 
       if (!this.usuario.nombreusuario || !this.usuario.email) {
-        alert('Debes seleccionar un usuario');
+        this.alerta.warning('Debes seleccionar un usuario');
         return;
       }
 
       if (!this.domicilio.coloniasSelected) {
-        alert('Debes seleccionar una colonia.');
+        this.alerta.warning('Debes seleccionar una colonia.');
         return;
       }
 
@@ -228,12 +229,12 @@ export class PacientesComponent {
         throw new Error('No se pudo obtener el ID del paciente creado.');
       }
 
-      alert('Paciente, domicilio y usuario creados exitosamente');
+      this.alerta.success('Paciente, domicilio y usuario creados exitosamente');
       this.resetForm();
 
     } catch (error) {
       console.error('Error al crear paciente:', error);
-      alert('Hubo un error al crear el paciente. Revisa la consola.');
+      this.alerta.error('Hubo un error al crear el paciente');
     }
   }
 
@@ -278,7 +279,7 @@ export class PacientesComponent {
         this.roles = res;
       },
       error: (err) => {
-        console.error('Error al cargar roles', err);
+        this.alerta.error('Error al cargar roles');
       }
     });
   }
