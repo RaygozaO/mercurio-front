@@ -10,7 +10,7 @@ export const routes: Routes = [
   {
     path: 'admin',
     canActivate: [RoleGuard],
-    data: { roles: [1, 2] },
+    data: { roles: [1, 2, 3, 4, 5, 6] },
     loadComponent: () => import('./admin/admin.component').then(m => m.AdminComponent),
     children: [
       {
@@ -78,7 +78,7 @@ export const routes: Routes = [
       {
         path: 'referencia',
         loadComponent: () => import('./referencia/referencia.component').then(m => m.ReferenciaComponent),
-        data: { roles: [1, 2, 5] } // ajusta según los roles que deban ver el módulo
+        data: { roles: [1, 2, 5] }
       }
 
     ]
@@ -86,7 +86,7 @@ export const routes: Routes = [
   {
     path: 'pacientes',
     canActivate: [RoleGuard],
-    data: { roles: [3] },
+    data: { roles: [1 ,2, 3] },
     loadComponent: () => import('./pacientes/pacientes.component').then(m => m.PacientesComponent)
   },
   {

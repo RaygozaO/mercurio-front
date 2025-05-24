@@ -113,6 +113,7 @@ export class LoginComponent {
             case 3: this.router.navigate(['/pacientes']); break;
             case 4: this.router.navigate(['/admin/inventario']); break;
             case 5: this.router.navigate(['/admin/citas']); break;
+            case 6: this.router.navigate(['/admin']); break;
             default: this.router.navigate(['/']);
           }
         },
