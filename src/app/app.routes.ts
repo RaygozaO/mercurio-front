@@ -73,7 +73,7 @@ export const routes: Routes = [
       {
         path: 'recetas',
         loadComponent: () => import('./recetas/recetas.component').then(m => m.RecetasComponent),
-        data: { roles: [1, 2, 3] }
+        data: { roles: [1, 2, 5] }
       },
       {
         path: 'referencia',
