@@ -30,4 +30,8 @@ export class ReferenciaService {
   obtenerTodas(): Observable<any[]> {
     return this.http.get<any[]>(`${this.baseUrl}/todas`);
   }
+  obtenerIdMedicoPorUsuario(idusuario: number): Observable<{ idmedico: number }> {
+    return this.http.get<{ idmedico: number }>(`${this.baseUrl}/medico-por-usuario/${idusuario}`);
+  }
+
 }

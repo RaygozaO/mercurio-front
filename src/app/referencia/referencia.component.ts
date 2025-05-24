@@ -36,11 +36,26 @@ export class ReferenciaComponent implements OnInit {
   pacienteActual: any = null;
 
   ngOnInit(): void {
+    const idUsuario = Number(localStorage.getItem('id_usuario'));
+
+    if (idUsuario) {
+      this.referenciaService.obtenerIdMedicoPorUsuario(idUsuario).subscribe({
+        next: (res) => {
+          this.referencia.idmedico_origen = res.idmedico;
+          console.log('🧑‍⚕️ Médico origen:', res.idmedico);
+        },
+        error: () => {
+          this.alerta.error('No se pudo identificar al médico logueado');
+        }
+      });
+    }
+
     this.referencia.idpaciente = Number(localStorage.getItem('id_cliente')) || 0;
     this.nombrePaciente = localStorage.getItem('nombrePaciente') || 'Paciente desconocido';
     this.cargarDoctores();
     this.cargarReferencias();
   }
+
   cargarDoctores() {
     this.citasService.getDoctores().subscribe({
       next: (res) => {
