@@ -9,6 +9,7 @@ import { environment } from '../../environments/environment';
 export class AuthService {
   private loginUrl = `${environment.apiBaseUrl}${environment.endpoints.login}`;
   private registerUrl = `${environment.apiBaseUrl}${environment.endpoints.register}`;
+  private authUrl = `${environment.apiBaseUrl}/auth`;
 
   constructor(private http: HttpClient) {}
 
@@ -28,6 +29,9 @@ export class AuthService {
 
   register(data: { nombreusuario: string; email: string; pass: string; id_rol?: number }): Observable<any> {
     return this.http.post(this.registerUrl, data);
+  }
+  obtenerUsuarioPorId(id: number): Observable<any> {
+    return this.http.get(`${this.authUrl}/usuario/${id}`);
   }
 }
 

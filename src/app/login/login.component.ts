@@ -59,32 +59,6 @@ export class LoginComponent {
     }
   }
 
- /* onSubmit() {
-    const { email, clave_log, captchaAnswer } = this.loginForm.value;
-
-    if (!this.showCaptchaChallenge || parseInt(captchaAnswer) !== this.captchaExpected) {
-      alert('Captcha incorrecto.');
-      return;
-    }
-
-    this.authService.login(email, clave_log, captchaAnswer, this.captchaExpected.toString())
-      .subscribe({
-        next: (res) => {
-          localStorage.setItem('token', res.token);
-          localStorage.setItem('role', res.role.toString());
-
-          switch (res.role) {
-            case 1: this.router.navigate(['/admin']); break;
-            case 2: this.router.navigate(['/admin/ventas']); break;
-            case 3: this.router.navigate(['/pacientes']); break;
-            default: this.router.navigate(['/']);
-          }
-        },
-        error: () => {
-          alert('Error en el inicio de sesión. Verifica tus credenciales.');
-        }
-      });
-  }*/
   onSubmit() {
     const { email, clave_log, captchaAnswer } = this.loginForm.value;
 

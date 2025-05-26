@@ -1,7 +1,8 @@
-import { Component } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import { Router, RouterLink, RouterOutlet } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
+import {AuthService} from "../services/auth.service";
 
 @Component({
   selector: 'app-admin',
@@ -10,9 +11,10 @@ import { CommonModule } from '@angular/common';
   templateUrl: './admin.component.html',
   styleUrl: './admin.component.scss'
 })
-export class AdminComponent {
+export class AdminComponent implements OnInit {
   terminoBusqueda = '';
   sugerencias: any[] = [];
+  usuarioLogueado: string = '';
 
   opciones = [
     { nombre: 'recetas', icono: '📄', ruta: '/admin/recetas', categoria: 'Clínico' },
@@ -37,7 +39,38 @@ export class AdminComponent {
   ];
 
 
-  constructor(private router: Router) {}
+  constructor(private router: Router, private authService: AuthService) {}
+
+  ngOnInit(): void {
+    const idUsuario = localStorage.getItem('id_usuario');
+
+    if (idUsuario) {
+      this.authService.obtenerUsuarioPorId(+idUsuario).subscribe({
+        next: (data) => {
+          const nombreCompleto = `${data.nombre} ${data.apellidopaterno}`;
+          let rol = 'Usuario';
+
+          switch (data.rol) {
+            case 'medico':
+              rol = 'Médico';
+              break;
+            case 'paciente':
+              rol = 'Paciente';
+              break;
+            case 'admin':
+              rol = 'Administrador';
+              break;
+          }
+
+          this.usuarioLogueado = `${nombreCompleto} (${rol})`;
+        },
+        error: (err) => {
+          console.error('Error al obtener el usuario:', err);
+          this.usuarioLogueado = 'Usuario desconocido';
+        }
+      });
+    }
+  }
 
   filtrarSugerencias() {
     const termino = this.terminoBusqueda.toLowerCase().trim();
@@ -70,5 +103,14 @@ export class AdminComponent {
     } else {
       this.router.navigate(['/admin/busqueda'], { queryParams: { q: termino } });
     }
+  }
+  cerrarSesion(): void {
+    // Elimina datos de sesión (ajusta según tus claves)
+    localStorage.removeItem('token');
+    localStorage.removeItem('nombreusuario');
+    localStorage.removeItem('id_usuario'); // o cualquier otro valor que guardes
+
+    // Redirige al login
+    this.router.navigate(['/login']);
   }
 }

@@ -3,10 +3,18 @@
 <!-- Barra de navegación -->
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
   <div class="container-fluid margin-nav">
+
+    <!-- Usuario logueado con icono -->
+    <div class="d-flex align-items-center me-3">
+      <i class="bi bi-person-circle fs-4 text-primary me-1"></i>
+      <span class="fw-bold text-dark">{{ usuarioLogueado }}</span>
+    </div>
+
     <a class="navbar-brand letra-azul" href="#">Farmacia Mercurio</a>
 
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
-            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+            data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
+            aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
 
@@ -24,7 +32,7 @@
       </ul>
 
       <!-- Formulario de búsqueda -->
-      <form class="d-flex position-relative" (ngSubmit)="buscar()">
+      <form class="d-flex position-relative align-items-center" (ngSubmit)="buscar()">
         <input class="form-control me-2"
                type="search"
                name="termino"
@@ -33,8 +41,15 @@
                placeholder="Ingresa búsqueda..."
                aria-label="Search"
                autocomplete="off">
-        <button class="btn btn-outline-success" type="submit">Buscar</button>
-        <ul *ngIf="terminoBusqueda.trim().length > 0" class="list-group">
+        <button class="btn btn-outline-success me-2" type="submit">Buscar</button>
+
+        <!-- Botón de cerrar sesión -->
+        <button type="button" class="btn btn-outline-danger" (click)="cerrarSesion()" title="Cerrar sesión">
+          <i class="bi bi-box-arrow-right"></i>
+        </button>
+
+        <!-- Lista de sugerencias -->
+        <ul *ngIf="terminoBusqueda.trim().length > 0" class="list-group position-absolute top-100 start-0 w-100 z-index-3">
           <li *ngFor="let sugerencia of sugerencias"
               (click)="seleccionarSugerencia(sugerencia)"
               class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
