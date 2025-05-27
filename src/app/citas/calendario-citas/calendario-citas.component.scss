@@ -23,3 +23,15 @@
   background-color: transparent;
   border: none;
 }
+.domingo {
+  background-color: #f8d7da !important;
+  color: #721c24;
+  pointer-events: none;
+  cursor: not-allowed;
+}
+.calendar-day.pasado {
+  background-color: #ffecb3; // amarillo claro
+  color: #999;
+  cursor: default;
+  border: 1px solid #d3d3d3;
+}

@@ -19,11 +19,15 @@
     <div class="day-name color_day" *ngFor="let d of diasSemana">{{ d }}</div>
     <div
       *ngFor="let dia of diasDelMes"
-      class="calendar-day color_azul"
-      [class.empty]="!dia"
-      (click)="dia && seleccionarDia(dia)"
-    >
-      {{ dia }}
+      class="calendar-day"
+      [ngClass]="{
+      'color_azul': true,
+      'empty': !dia,
+      'domingo': dia?.esDomingo,
+      'pasado': dia?.esPasado
+      }"
+      (click)="dia && seleccionarDia(dia.dia)">
+      {{ dia?.dia }}
     </div>
   </div>
 
@@ -43,18 +47,30 @@
             </div>
             <div class="mb-3">
               <label class="form-label">Doctor (a):</label>
-              <select class="form-select" [(ngModel)]="doctorSeleccionado" name="doctor">
+              <select class="form-select" [(ngModel)]="doctorSeleccionado" name="doctor" (change)="actualizarHorasDisponibles()">
+                <option value="">-- Selecciona un médico --</option>
                 <option *ngFor="let d of doctores" [value]="d.idusuario">{{ d.nombrecliente }}</option>
               </select>
             </div>
-            <div class="mb-3">
+            <div class="mb-3" *ngIf="doctorSeleccionado && listaCitas">
               <label class="form-label">Hora:</label>
-              <input type="time" class="form-control" [(ngModel)]="nuevaHora" name="hora">
+              <select class="form-select"
+                      [(ngModel)]="nuevaHora"
+                      name="hora"
+                      [disabled]="horasDisponibles.length === 0">
+                <option value="">-- Selecciona una hora --</option>
+                <option
+                  *ngFor="let h of horasDisponibles"
+                  [value]="h"
+                  [disabled]="esHoraOcupada(h)">
+                  {{ h }} {{ esHoraOcupada(h) ? '(Ocupada)' : '' }}
+                </option>
+              </select>
             </div>
-          </div>
-          <div class="modal-footer">
+            <div class="modal-footer">
             <button type="submit" class="btn btn-primary">Guardar</button>
             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+          </div>
           </div>
         </form>
       </div>
