@@ -1,0 +1,148 @@
+<ng-container *ngIf="datosCargados">
+
+  <form>
+    <div class="card mb-3">
+      <div class="card-header">
+        <h2 class="fuente-azul-chica">Paciente</h2>
+      </div>
+      <div class="card-body">
+        <div class="row">
+          <div class="col-md-6 mb-3">
+            <label for="nombrecliente" class="form-label">Nombre:</label>
+            <input class="form-control" type="text" id="nombrecliente" [(ngModel)]="paciente.nombrecliente" name="nombrecliente" required>
+          </div>
+          <div class="col-md-6 mb-3">
+            <label for="apellidopaterno" class="form-label">Apellido Paterno:</label>
+            <input class="form-control" type="text" id="apellidopaterno" [(ngModel)]="paciente.apellidopaterno" name="apellidopaterno" required>
+          </div>
+          <div class="col-md-6 mb-3">
+            <label for="apellidomaterno" class="form-label">Apellido Materno:</label>
+            <input class="form-control" type="text" id="apellidomaterno" [(ngModel)]="paciente.apellidomaterno" name="apellidomaterno" required>
+          </div>
+          <div class="col-md-6 mb-3">
+            <label for="telefono" class="form-label">Teléfono:</label>
+            <input class="form-control" type="tel" id="telefono" [(ngModel)]="paciente.telefono" name="telefono" required>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Segundo marco: Domicilio -->
+    <div class="card mb-3">
+      <div class="card-header">
+        <h3 class="fuente-azul-chica">Domicilio</h3>
+      </div>
+      <div class="card-body">
+        <div class="row">
+          <div class="col-md-4 mb-3">
+            <label class="form-label" for="calle">Calle:</label>
+            <input class="form-control" type="text" id="calle" [(ngModel)]="domicilio.calle" name="calle" required>
+          </div>
+          <div class="col-md-4 mb-3">
+            <label class="form-label" for="numero">Número:</label>
+            <input class="form-control" type="text" id="numero" [(ngModel)]="domicilio.numero" name="numero" required>
+          </div>
+          <div class="col-md-4 mb-3">
+            <label class="form-label" for="interior">Interior:</label>
+            <input class="form-control" type="text" id="interior" [(ngModel)]="domicilio.interior" name="interior">
+          </div>
+          <!-- Código Postal -->
+          <div class="col-md-6 mb-3">
+            <label class="form-label" for="codigopostal">Código Postal:</label>
+            <input class="form-control" type="text" id="codigoPostal"
+                   [(ngModel)]="domicilio.codigopostal"
+                   (ngModelChange)="buscarColoniasPorCP()"
+                   name="codigopostal" required>
+          </div>
+
+          <!-- Colonias -->
+          <div class="col-md-6 mb-3">
+            <label class="form-label" for="colonias">Colonias:</label>
+            <select id="colonias"
+                    class="form-control"
+                    [(ngModel)]="domicilio.coloniasSelected"
+                    name="colonias"
+                    (ngModelChange)="onColoniaChange($event)">
+              <option [ngValue]="null" disabled selected>Seleccione Colonia</option>
+              <option *ngFor="let colonia of domicilio.colonias" [ngValue]="colonia">
+                {{ colonia.nombrecolonia }}
+              </option>
+            </select>
+          </div>
+          <!-- Municipio -->
+          <div class="col-md-6 mb-3">
+            <label class="form-label" for="municipio">Municipio:</label>
+            <input class="form-control" id="municipio" [(ngModel)]="domicilio.municipio" name="municipio" readonly>
+          </div>
+          <!-- Entidad Federativa -->
+          <div class="col-md-6 mb-3">
+            <label class="form-label" for="entidad">Entidad Federativa:</label>
+            <input class="form-control" id="entidad" [(ngModel)]="domicilio.entidad" name="entidad" readonly>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tercer marco: Usuario -->
+    <div class="card mb-3">
+      <div class="card-header">
+        <h3 class="fuente-azul-chica">Usuario</h3>
+      </div>
+      <div class="card-body">
+        <div class="row">
+          <div class="col-md-6 mb-3">
+            <label class="form-label" for="nombreusuario">Nombre de Usuario:</label>
+            <input class="form-control" type="text" id="nombreusuario" [(ngModel)]="usuario.nombreusuario" name="nombreusuario" required>
+          </div>
+          <div class="col-md-6 mb-3">
+            <label class="form-label" for="email">Email:</label>
+            <input class="form-control" type="email" id="email" [(ngModel)]="usuario.email" name="email" [disabled]="emailDisabled" required>
+          </div>
+          <div class="col-md-6 mb-3">
+            <label class="form-label" for="password">Contraseña:</label>
+            <input class="form-control" type="password" id="password" [(ngModel)]="usuario.password" name="password" required>
+          </div>
+          <div class="col-md-6 mb-3">
+            <label class="form-label" for="password2">Repetir Contraseña:</label>
+            <input class="form-control" type="password" id="password2" [(ngModel)]="usuario.password2" name="password2" required>
+          </div>
+        </div>
+
+        <div class="row">
+          <!-- Permisos -->
+          <div class="col-md-6 mb-3">
+            <label class="form-label" for="id_rol">Permisos del Usuario:</label>
+            <select class="form-select" id="id_rol" [(ngModel)]="usuario.id_rol" name="id_rol" required>
+              <option *ngFor="let rol of roles" [value]="rol.idroles">{{ rol.nombrerol }}</option>
+            </select>
+          </div>
+
+          <!-- Turnos (horarios) -->
+          <div *ngIf="usuario.id_rol == 5" class="col-md-6 mb-3">
+            <label class="form-label">Turno:</label>
+            <select class="form-select" [(ngModel)]="medico.id_turno" name="id_turno">
+              <option *ngFor="let t of turnos" [value]="t.idhorarios">{{ t.nombre_horario }}</option>
+            </select>
+          </div>
+        </div>
+        <div *ngIf="usuario.id_rol == 5" class="row">
+          <div class="col-md-6 mb-3">
+            <label class="form-label">Teléfono de emergencia:</label>
+            <input class="form-control" type="text" [(ngModel)]="medico.telefono" name="telefono">
+          </div>
+          <div class="col-md-6 mb-3">
+            <label class="form-label">Cédula Profesional:</label>
+            <input class="form-control" type="text" [(ngModel)]="medico.cedula" name="cedula">
+          </div>
+          <div class="col-md-6 mb-3">
+            <label class="form-label">Especialidad:</label>
+            <select class="form-select" [(ngModel)]="medico.idespecialidad" name="idespecialidad" style="color: #3e3e53">
+              <option *ngFor="let e of especialidades" [value]="e.idesepecialidad">{{ e.nombreespecialidad }}</option>
+            </select>
+          </div>
+        </div>
+        <button class="btn-btn mt-3" type="submit">Crear paciente y usuario</button>
+      </div>
+    </div>
+  </form>
+</ng-container>

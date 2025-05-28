@@ -79,8 +79,12 @@ export const routes: Routes = [
         path: 'referencia',
         loadComponent: () => import('./referencia/referencia.component').then(m => m.ReferenciaComponent),
         data: { roles: [1, 2, 5] }
+      },
+      {
+       path: 'datos',
+       loadComponent: () => import('./datos/datos.component').then(m => m.DatosComponent),
+       data: { roles: [1, 2, 3, 6] }
       }
-
     ]
   },
   {
