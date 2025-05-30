@@ -1,11 +1,11 @@
 import { inject, Injectable } from '@angular/core';
-import { CanActivate, Router, ActivatedRouteSnapshot } from '@angular/router';
+import { CanActivate, CanActivateChild, Router, ActivatedRouteSnapshot } from '@angular/router';
 import { AlertaService } from '../services/alerta.service';
 
 @Injectable({
   providedIn: 'root'
 })
-export class RoleGuard implements CanActivate {
+export class RoleGuard implements CanActivate, CanActivateChild {
   private router = inject(Router);
   private alerta = inject(AlertaService);
 
@@ -19,13 +19,16 @@ export class RoleGuard implements CanActivate {
     const storedRole = localStorage.getItem('role');
     const userRole = storedRole ? parseInt(storedRole, 10) : null;
 
-
     if (userRole !== null && expectedRoles.includes(userRole)) {
       return true;
     }
 
     this.alerta.warning('Acceso denegado: no tienes permisos para esta sección');
-    this.router.navigate(['/login']);
+    //this.router.navigate(['/login']);
     return false;
+  }
+
+  canActivateChild(childRoute: ActivatedRouteSnapshot): boolean {
+    return this.canActivate(childRoute);
   }
 }

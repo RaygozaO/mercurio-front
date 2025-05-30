@@ -51,6 +51,15 @@ export class AdminComponent implements OnInit {
           let rol = 'Usuario';
 
           switch (data.rol) {
+            case 'compras':
+              rol = 'Compras';
+              break;
+            case 'ventas':
+              rol = 'Ventas';
+              break;
+            case 'superadmin':
+              rol = 'Super Admin';
+              break;
             case 'medico':
               rol = 'Médico';
               break;

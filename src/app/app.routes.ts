@@ -10,55 +10,56 @@ export const routes: Routes = [
   {
     path: 'admin',
     canActivate: [RoleGuard],
+    canActivateChild: [RoleGuard],
     data: { roles: [1, 2, 3, 4, 5, 6] },
     loadComponent: () => import('./admin/admin.component').then(m => m.AdminComponent),
     children: [
       {
         path: 'ventas',
         loadComponent: () => import('./ventas/ventas.component').then(m => m.VentasComponent),
-        data: { roles: [1, 2] }
+        data: { roles: [1, 2, 3] }
       },
       {
         path: 'citas',
         loadComponent: () => import('./citas/calendario-citas/calendario-citas.component').then(m => m.CalendarioCitasComponent),
-        data: { roles: [1, 2, 5, 6] } // acceso admin (1), admin2 (2), medico (5)
+        data: { roles: [1, 2, 5, 6] }
       },
       {
         path: 'inventario',
         loadComponent: () => import('./inventario/inventario.component').then(m => m.InventarioComponent),
-        data: { roles: [1, 2] },
+        data: { roles: [1, 2, 4] },
         children: [
           {
             path: '',
             loadComponent: () => import('./inventario/listar-producto/listarProducto.component').then(m => m.ListarProductoComponent),
-            data: { roles: [1, 2] }
+            data: { roles: [1, 2, 4] }
           },
           {
             path: 'crear',
             loadComponent: () => import('./inventario/crear-producto/crearProducto.component').then(m => m.CrearProductoComponent),
-            data: { roles: [1, 2] }
+            data: { roles: [1, 2, 4] }
           },
           {
             path: 'editar/:id',
             loadComponent: () => import('./inventario/editar-producto/editarProducto.component').then(m => m.EditarProductoComponent),
-            data: { roles: [1, 2] }
+            data: { roles: [1, 2, 4] }
           },
           {
             path: 'detalle/:id',
             loadComponent: () => import('./inventario/detalle-producto/detalleProducto.component').then(m => m.DetalleProductoComponent),
-            data: { roles: [1, 2] }
+            data: { roles: [1, 2, 4] }
           },
           {
             path: 'faltantes',
             loadComponent: () => import('./inventario/faltantes-producto/faltantesProducto.component').then(m => m.FaltantesProductoComponent),
-            data: { roles: [1, 2] }
+            data: { roles: [1, 2, 4] }
           },
         ]
       },
       {
         path: 'crear-cliente',
         loadComponent: () => import('./pacientes/pacientes.component').then(m => m.PacientesComponent),
-        data: { roles: [1] }
+        data: { roles: [1, 2] }
       },
       {
         path: 'historial',
@@ -83,14 +84,14 @@ export const routes: Routes = [
       {
        path: 'datos',
        loadComponent: () => import('./datos/datos.component').then(m => m.DatosComponent),
-       data: { roles: [1, 2, 3, 6] }
+       data: { roles: [1, 2, 3, 5, 6] }
       }
     ]
   },
   {
     path: 'pacientes',
     canActivate: [RoleGuard],
-    data: { roles: [1 ,2, 3] },
+    data: { roles: [1 ,2, 3, 5] },
     loadComponent: () => import('./pacientes/pacientes.component').then(m => m.PacientesComponent)
   },
   {
