@@ -83,8 +83,8 @@ export class LoginComponent {
 
           switch (res.role) {
             case 1: this.router.navigate(['/admin']); break;
-            case 2: this.router.navigate(['/admin/ventas']); break;
-            case 3: this.router.navigate(['/pacientes']); break;
+            case 2: this.router.navigate(['/admin/']); break;
+            case 3: this.router.navigate(['/admin/ventas']); break;
             case 4: this.router.navigate(['/admin/inventario']); break;
             case 5: this.router.navigate(['/admin/citas']); break;
             case 6: this.router.navigate(['/admin']); break;
